@@ -1,21 +1,28 @@
 # Проектная работа "Веб-ларек"
 
+##### Ссылка на сайт
+
+https://github.com/Iunnicova/web-larek-frontend.git
+
 Стек: HTML, SCSS, TS, Webpack
 
 Структура проекта:
+
 - src/ — исходные файлы проекта
 - src/components/ — папка с JS компонентами
 - src/components/base/ — папка с базовым кодом
 
 Важные файлы:
+
 - src/pages/index.html — HTML-файл главной страницы
 - src/types/index.ts — файл с типами
 - src/index.ts — точка входа приложения
-- src/styles/styles.scss — корневой файл стилей
+- src/scss/styles.scss — корневой файл стилей
 - src/utils/constants.ts — файл с константами
 - src/utils/utils.ts — файл с утилитами
 
 ## Установка и запуск
+
 Для установки и запуска проекта необходимо выполнить команды
 
 ```
@@ -29,6 +36,7 @@ npm run start
 yarn
 yarn start
 ```
+
 ## Сборка
 
 ```
@@ -40,62 +48,74 @@ npm run build
 ```
 yarn build
 ```
-******************************************
 
-## Объекты при запросе
+---
 
+## Данные и типы данных использумые в приложении 
+
+Каталог продукции
+
+```
+export interface IProductCatalog {
 	id: string;
-	rating: number;
-	director: string;
-	tags: string[];
-  title: string;
-	about: string;
-  description: string;
-  image: string;
-  cover: string;
- 
-## БАЗОВЫЕ КЛАССЫ
+	description: string;
+	category: string;
+	image: string;
+	title: string;
+	button: string;
+	price: number | null;
+}
+```
 
- ### class components
-класс имеет обобщенный тип .T, предназначен для компонентов пользовательского интерфейса, который управляет элементами HTML, настройки текстового содержимого, добавления и удаления CSS-классов, обновления свойств объекта. Есть защищенный конструктор.
-## Метод setText
-Задает текстовое содержимое предоставленного элемента, получает строку.
-## Метод setDisabled:
-функция для включения или отключения элемента HTML. getAttribute()- метод для получения текущго значения атрибута, используется чтобы удалить атрибут, вызов - removeAttribute(). removeAttribute()- удаления атрибута
-## Метод hiddenElementClass:
-Принимает значение и типа .HTMLElement, unknown.
-скрывает элемент на веб-странице.
-## Метод visibleElementClass:
-Принимает значение и типа .HTMLElement, unknown.
-Делает элемент видимым.
-## Метод render:
-Принимает необязательный объект типа .Partial<T>
-Обновляет свойства объекта с предоставленными данными.
+Пользовательские данные
 
-### class Api
- параметры будут использоваться при отправке запросов к API. Класс определяет базовый URL (baseUrl) и параметры запроса (options: RequestInit),  **
-## метод handleResponse 
-нужен для обработки HTTP-ответов. Проверяет, является ли ответ успешным (response.ok). При положительном ответе возвращает объект JSON,
-если ответ не успешный, отклоненый промис с ошибкой (data.error). ** 
-## метод get
- принимает uri в качестве параметра, использует оператор spread  для включения параметров и выполняет запрос get. В завершение вызывает метод handleResponse, который обрабатывает ответ от сервера.
-## метод post
- отправляет POST-запрос с использованием api. Затем он добавляет в запрос данныe в формате JSON. В завершение вызывает метод handleResponse, который обрабатывает ответ от сервера. ** 
- 
-## class EventEmitter
-компанент для работы с событиями, устанавливает и снимает слушательт событий.
-## метод on
-подписка на события
-## метод off
-отмена события
-## метод emit
-инициализация события
-## метод  onAll
-слушать все события
-## метод  offAll
-сбрасывает событие
-## метод trigger
-генерирует событие при вызове
-выполнняет все функции обработчики событий
- 
+```
+export interface IUserData {
+	id: string;
+	payment: string;
+	title: string;
+	address: string | number;
+	email: string | number;
+	button: string;
+	phone: number;
+}
+```
 
+### Интерфейс для хранения каталога карточек с товаром
+
+```
+export interface ICollectionOfGoods {
+	cards: IProductCatalog;
+	preview: string | null;
+}
+```
+
+//используем утилиту Pick - выбирает указанные свойства из типа/интерфейса
+
+```
+Информация о продукте(товаре)
+
+```
+export type IProductInformation = Pick<IProductCatalog, 'image' | 'description' | 'category' | 'title' | 'price'>;
+```
+
+Корзина
+```
+export type IBasket = Pick<IProductCatalog, 'title' | 'price'>;
+```
+
+Форма для оплаты
+```
+export type IPaymentForm = Pick<IUserData, 'address' | 'button'>;
+```
+
+Контактная информация
+```
+
+export type IContactForm = Pick<IUserData, 'email' | 'phone' | 'button'>;
+```
+
+Завершение покупки
+```
+export type ISuccessfulPurchase = Pick<IProductCatalog, 'title' | 'price' | 'button'>;
+```
