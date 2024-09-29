@@ -1,15 +1,17 @@
+import { IProductCatalog } from './index';
 /* eslint-disable @typescript-eslint/ban-types */
 
 export interface IEvents {
 	url: string;
-	total: number,
-}
-
-export interface IBasked {
-	items: string;
 	total: number;
 }
 
+export interface IBasked {
+	items: Map<string, number>;
+	add(id: string): void;
+	remove(id: string): void;
+	total: number;
+}
 
 export interface IProductCatalog {
 	id: string;
@@ -22,18 +24,39 @@ export interface IProductCatalog {
 }
 
 export interface IUser {
-	id: string;
 	payment: string;
-	title: string;
-	address: string | number;
+	address: string;
 	email: string | number;
-	button: string;
 	phone: number;
 }
 
+export interface IProduct {
+	id: string;
+	title: string;
+}
+
+//Интерфейс Модели для хранения данных товара
+export interface ICatalogModel {
+	items: IProduct;
+	setItems(items: IProduct[]): void;
+	getProduct(id: string): IProduct;
+}
+
+// Интерфейс отображение компонентов
+//+Интерфейс для класса отображения
+export interface IView {
+	render(data?: object): HTMLElement;
+}
+//+ Интерфейс для конструктора
+export interface IViewConstructor {
+	new (container: HTMLElement, events?: IEventEmitter): IView;
+}
+
+//Интерфейс для хранения событий
+
 //Интерфейс каталога карточек с товаром
 export interface IProductData {
-	Product: IProductCatalog;
+	product: IProductCatalog;
 	preview: string | null;
 	addProduct(product: IProductCatalog): void;
 	deleteProduct(productId: string, payload: Function | null): void;
@@ -44,17 +67,21 @@ export interface IProductData {
 }
 
 // Интерфейс данных пользователя
- export interface IUserData {
- getUserInfo(): TDataСustomer;
- setUserInfo(userData: IUser): void;
- checkUserValid(data:Record<keyof TDataСustomer, string>):  boolean;
+export interface IUserData {
+	getUserInfo(): TDataСustomer;
+	checkUserValid(data: Record<keyof TDataСustomer, string>): boolean;
 }
 
 //используем утилиту Pick - выбирает указанные свойства из типа/интерфейса
-export type TProductInformation = Pick<IProductCatalog, 'image' | 'description' | 'category' | 'title' | 'price'>;
+export type TProductInformation = Pick<
+	IProductCatalog,
+	'image' | 'description' | 'category' | 'title' | 'price'
+>;
 export type TBasket = Pick<IProductCatalog, 'title' | 'price'>;
-export type  TDataСustomer = Pick<IUser, 'address' | 'email' | 'phone'>;
+export type TDataСustomer = Pick<IUser, 'address' | 'email' | 'phone'>;
 export type TPaymentForm = Pick<IUser, 'address' | 'button'>;
 export type TContactForm = Pick<IUser, 'email' | 'phone' | 'button'>;
-export type TSuccessfulPurchase = Pick<IProductCatalog, 'title' | 'price' | 'button'>;
-
+export type TSuccessfulPurchase = Pick<
+	IProductCatalog,
+	'title' | 'price' | 'button'
+>;
