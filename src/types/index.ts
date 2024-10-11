@@ -122,7 +122,8 @@ export interface IOrderForm {
 }
 
 export interface IOrdering {
-	basketState: boolean;
+	isClosed: unknown;
+	isActive: unknown;
 	price: string | number;
 	clearBid(): unknown;
 	isParticipate: boolean;
@@ -152,6 +153,7 @@ export interface IOrder extends IOrderForm {
 	total: 0;
 	itemId: [];
 	order: IOrdering | IOrder
+	title: string[];
 }
 
 export interface IPage {

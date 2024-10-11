@@ -1,32 +1,47 @@
 import {
 	FormErrors,
 	IAppState,
+	IFormContacts,
 	IOrder,
 	IOrderForm,
-	// IOrdering,
+	IOrdering,
 } from '../types';
 import { Model } from './base/Model';
 
- interface IOrdering {
-	price: string | number;
-	clearBid(): unknown;
-	isParticipate: boolean;
-	CLots: boolean;
-	items: string[];
-	reduce: boolean;
-	payment: string;
-	total: 0;
-	address: string;
-	email: string;
-	phone: string;
-	_id?: string;
-	title: string;
-	image: string;
-	category: string;
-	status: boolean;
-	about: string;
-	item: string;
-}
+//  interface IOrdering {
+// 	isClosed: unknown;
+// 	isActive: unknown;
+// 	price: string | number;
+// 	clearBid(): unknown;
+// 	isParticipate: boolean;
+// 	CLots: boolean;
+// 	items: string[];
+// 	reduce: boolean;
+// 	payment: string;
+// 	total: 0;
+// 	address: string;
+// 	email: string;
+// 	phone: string;
+// 	_id?: string;
+// 	title: string;
+// 	image: string;
+// 	category: string;
+// 	status: boolean;
+// 	about: string;
+// 	item: string;
+// }
+
+//  interface IOrder extends IOrderForm {
+// 	items: string[];
+// 	payment: string;
+// 	address: string;
+// 	email: string;
+// 	phone: string;
+// 	total: 0;
+// 	itemId: [];
+// 	order: IOrdering | IOrder
+// 	title: string[];
+// }
 
 export type CatalogChangeEvent = {
 	catalog: IOrdering[];
@@ -54,7 +69,8 @@ export class AppState extends Model<IAppState> {
 		status: '',
 		CLots: false,
 		reduce: false,
-		order: undefined
+		order: undefined,
+		title: []
 	};
 	preview: string | null;
 	formErrors: FormErrors = {};
@@ -98,20 +114,19 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('preview:changed', item);
 	}
 
-	getActiv(): IOrdering[] {
-		return this.catalog.filter(
-			(item) => item.status === 'active' && item.isParticipate
-		);
-	}
+	getActiveLots(): IOrdering[] {
+		return this.catalog.filter(IOrdering => IOrdering.isActive);
+}
 
 	getClosedLots(): IOrdering[] {
-		return this.catalog.filter(lot => lot.isClosed);
+		return this.catalog.filter(IOrdering => IOrdering.isClosed);
 	}
 
-	setOrderField(field: keyof IOrderForm, value: string): void {
+	setOrderField(field: keyof IFormContacts , value: string): void {
 		this.order[field] = value;
 		this.validateOrder();
 }
+
 
 	validateOrder() {
 		const errors: typeof this.formErrors = {};
@@ -147,6 +162,5 @@ getBasketItems(): string[] {
 			return [];
 	}
 }
-
-
 }
+
