@@ -1,5 +1,7 @@
 // import { IProductCard } from './index';
-/* eslint-disable @typescript-eslint/ban-types */
+
+
+import { ApiPostMethods } from '../components/base/api';
 
 export interface IProductCard {
 	_id: string;
@@ -12,6 +14,8 @@ export interface IProductCard {
 }
 
 export interface IUser {
+	clearBid: unknown;
+	status: string;
 	_id: string;
 	payment?: string;
 	total?: number;
@@ -26,6 +30,7 @@ export interface IEventEmitter {
 }
 
 export interface IProduct {
+	image: string;
 	id: string;
 	title: string;
 	name?: string;
@@ -34,18 +39,19 @@ export interface IProduct {
 }
 
 export interface IEvents {
-	url: string;
-	total: number;
+	// url: string;
+	// total: number;
 	emit: (event: string, data?: unknown) => void;
 }
 
 export interface IBasket {
-	items: Map<string, number>;
-	add(id: string): void;
-	total: number;
-	remove(id: string): void;
-	id?: string;
-	data?: string;
+	forEach(arg0: (item: { basketState: boolean }) => void): unknown;
+	_items: Map<string, number>;
+	_add(id: string): void;
+	_total: number;
+	_remove(id: string): void;
+	_id?: string;
+	_data?: string;
 }
 
 export type TModalData = {
@@ -56,11 +62,11 @@ export interface IViewModel {
 	content: HTMLElement;
 	open(): void;
 	close(): void;
-	toggleButton(state: boolean): void; 
+	toggleButton(state: boolean): void;
 	render(data: TModalData): HTMLElement;
 }
 
-export interface IFormContacts{
+export interface IFormContacts {
 	address: string;
 	email: string | number;
 	phone: number;
@@ -72,9 +78,9 @@ export interface ICatalogModel {
 	getProduct(id: string): IProduct;
 }
 
-
 export interface ICard {
-	likes: any;
+
+	likes: unknown;
 	title: string;
 	description?: string | string[];
 	image: string;
@@ -95,29 +101,92 @@ export interface CApp {
 	basket: string[];
 	loading: boolean;
 	preview: string | null;
-	order: IOrder | null;
+	order: number,
 }
 
 export interface IOrderForm {
+	
+	price: unknown;
+	clearBid(): unknown;
+	isParticipate: boolean;
+	status: string;
+	CLots: boolean;
+	items: string[];
+	reduce: boolean;
+	payment: string;
+	total: 0;
+	address: string;
 	email: string;
 	phone: string;
-	name: string;
+	_id?: string;
+}
+
+export interface IOrdering {
+	basketState: boolean;
+	price: string | number;
+	clearBid(): unknown;
+	isParticipate: boolean;
+	CLots: boolean;
+	items: string[];
+	reduce: boolean;
+	payment: string;
+	total: 0;
+	address: string;
+	email: string;
+	phone: string;
+	_id?: string;
+	title: string;
+	image: string;
+	category: string;
+	status: boolean;
+	about: string;
+	item: string;
 }
 
 export interface IOrder extends IOrderForm {
-	items: string[]
+	items: string[];
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+	total: 0;
+	itemId: [];
+	order: IOrdering | IOrder
 }
 
- export interface IPage {
+export interface IPage {
 	counter: number;
 	catalog: HTMLElement[];
 	locked: boolean;
 }
 
- export interface ISuccess {
+export interface ISuccess {
 	total: number;
 	onClick: () => void;
 }
+
+export interface IApiShop {
+	getList: () => Promise<IProduct[]>;
+	getItem: (id: string) => Promise<IProduct>;
+	orderProduct: (order: IOrder) => Promise<IOrderForm>;
+	get: (uri: string) => Promise<object>;
+	post: (uri: string, data: object, method: ApiPostMethods) => Promise<object>;
+	url: URL;
+	options: Request;
+	cdnUrl: string;
+}
+
+export interface IAppState {
+	catalog: IOrderForm[];
+	basket: string[];
+	preview: string | null;
+	order: IOrder | null;
+	loading: boolean;
+	// payment: string;
+	total: 0;
+	_id: string;
+}
+
 // Интерфейс отображение компонентов
 // //+Интерфейс для класса отображения
 export interface IView {
@@ -127,8 +196,10 @@ export interface IView {
 }
 // //+ Интерфейс для конструктора
 export interface IViewConstructor {
-	new(container: HTMLElement, events?: IEventEmitter): IView;
+	new (container: HTMLElement, events?: IEventEmitter): IView;
 }
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
 //используем утилиту Pick - выбирает указанные свойства из типа/интерфейса
 export type TProductInformation = Pick<
@@ -140,6 +211,3 @@ export type TBasket = Pick<IProductCard, 'title' | 'price'>;
 export type TPaymentForm = Pick<IUser, 'address'>;
 export type TContactForm = Pick<IUser, 'email' | 'phone'>;
 export type TSuccessfulPurchase = Pick<IProductCard, 'title' | 'price'>;
-
-
-

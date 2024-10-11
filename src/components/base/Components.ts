@@ -1,52 +1,55 @@
+import {IEvents} from "./events";
+
 export abstract class Component<T> {
-	constructor(protected readonly container: HTMLElement) {
-	}
+    protected constructor(protected readonly container: HTMLElement) {
+        // Учитывайте что код в конструкторе исполняется ДО всех объявлений в дочернем классе
+    }
 
-	 // Инструментарий для работы с DOM в дочерних компонентах
+    // Инструментарий для работы с DOM в дочерних компонентах
 
-	 // Переключить класс
-// 	 toggleClass(element: HTMLElement, className: string, force?: boolean) {
-// 		element.classList.toggle(className, force);
-// }
+    // Переключить класс
+    toggleClass(element: HTMLElement, className: string, force?: boolean) {
+        element.classList.toggle(className, force);
+    }
 
-// Установить текстовое содержимое
-protected setText(element: HTMLElement, value: unknown) {
-		if (element) {
-				element.textContent = String(value);
-		}
-}
+    // Установить текстовое содержимое
+    protected setText(element: HTMLElement, value: unknown) {
+        if (element) {
+            element.textContent = String(value);
+        }
+    }
 
-// включение и отключение элемента HTML
-protected setDisabled(data: HTMLElement, state: boolean) {
-	if (data) {
-		if (state) data.getAttribute('disabled');
-		else data.removeAttribute('disabled');
-	}
-}
+    // Сменить статус блокировки
+    setDisabled(element: HTMLElement, state: boolean) {
+        if (element) {
+            if (state) element.setAttribute('disabled', 'disabled');
+            else element.removeAttribute('disabled');
+        }
+    }
 
-// Показать элемент
-protected visibleElement(element: HTMLElement) {
-	element.style.removeProperty('display');
-}
+    // Скрыть
+    protected setHidden(element: HTMLElement) {
+        element.style.display = 'none';
+    }
 
-// Скрыть элемент
-protected hiddenElement(element: HTMLElement) {
-		element.style.display = 'none';
-}
+    // Показать
+    protected setVisible(element: HTMLElement) {
+        element.style.removeProperty('display');
+    }
 
-// // Установить изображение с алтернативным текстом
-// protected setImage(element: HTMLImageElement, src: string, alt?: string) {
-// 		if (element) {
-// 				element.src = src;
-// 				if (alt) {
-// 						element.alt = alt;
-// 				}
-// 		}
-// }
+    // Установить изображение с алтернативным текстом
+    protected setImage(element: HTMLImageElement, src: string, alt?: string) {
+        if (element) {
+            element.src = src;
+            if (alt) {
+                element.alt = alt;
+            }
+        }
+    }
 
-	//Обновляет и возвращает корневой DOM-элемент
-	render(data?: Partial<T>): HTMLElement {
-			Object.assign(this as object, data ?? {});
-			return this.container;
-	}
+    // Вернуть корневой DOM-элемент
+    render(data?: Partial<T>): HTMLElement {
+        Object.assign(this as object, data ?? {});
+        return this.container;
+    }
 }

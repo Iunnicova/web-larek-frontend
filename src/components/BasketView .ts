@@ -4,12 +4,12 @@ import { IEventEmitter } from '../types';
 
 //+ Интерфейс для конструктора
 //на входе контейнер, в него будем выводить
- interface IViewConstructor {
+export interface IViewConstructor {
 	new (container: HTMLElement, events?: IEventEmitter): IView;
 }
 //+Интерфейс для класса отображения
 //устанавливаем данные, возвращаем контейнер
- interface IView {
+interface IView {
 	render(data?: object): HTMLElement;
 }
 
@@ -22,11 +22,20 @@ export class BasketItemView implements IView {
 	//Сохранение данных на будующее
 	protected id: string | null = null;
 
-	constructor(protected container: HTMLElement,protected events: IEventEmitter) {
+	constructor(
+		protected container: HTMLElement,
+		protected events: IEventEmitter
+	) {
 		// инициализируем, чтобы не искать повторно
-		this.title = container.querySelector('.basket-item__title') as HTMLSpanElement;
-		this.addButton = container.querySelector('.basket-item__add') as HTMLButtonElement;
-		this.removeButton = container.querySelector('.basket-item__remove') as HTMLButtonElement;
+		this.title = container.querySelector(
+			'.basket-item__title'
+		) as HTMLSpanElement;
+		this.addButton = container.querySelector(
+			'.basket-item__add'
+		) as HTMLButtonElement;
+		this.removeButton = container.querySelector(
+			'.basket-item__remove'
+		) as HTMLButtonElement;
 
 		//устанавливаем события
 		this.addButton.addEventListener('click', () => {
@@ -61,53 +70,4 @@ export class BasketView implements IView {
 		}
 		return this.container;
 	}
-	
 }
-
-// //можно собрать в функции или классы отдельные экраны с логикой их формирования
-// function renderBasket(items: string[]) {
-// 	basketView.render(
-// 			items.map((id) => {
-// 					const itemView = new BasketItemView(events);
-// 					try {
-// 							return itemView.render(catalogModel.getProduct(id));
-// 					} catch (error) {
-// 							console.error(error.message);
-// 							return null; 
-// 					}
-// 			})
-// 	);
-// }
-
-// function renderBasket(items: string[]) {
-// 	basketView.render(items.map((id) => {
-// 			const itemView = new BasketItemView(events);
-// 			return itemView.render(catalogModel.getProduct(id));
-// 		})
-// 	);
-// }
-
-// class BasketItemRenderer {
-// 	private events: IEventEmitter;
-
-// 	constructor(events: IEventEmitter) {
-// 			this.events = events;
-// 	}
-
-// 	renderBasketItem(id: string): any {
-// 			const itemView = new BasketItemView(this.events);
-// 			try {
-// 					return itemView.render(catalogModel.getProduct(id));
-// 			} catch (error) {
-// 					console.error(error.message);
-// 					return null;
-// 			}
-// 	}
-// }
-
-// function renderBasket(items: string[]) {
-// 	const basketItemRenderer = new BasketItemRenderer(events);
-// 	basketView.render(
-// 			items.map((id) => basketItemRenderer.renderBasketItem(id))
-// 	);
-// }

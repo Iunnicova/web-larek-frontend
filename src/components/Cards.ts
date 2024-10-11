@@ -4,7 +4,6 @@ import { IEvents } from '../types';
 import { ensureElement } from '../utils/utils';
 import { Component } from './base/Components';
 
-
 interface ICardActions {
 	onClick: (event: MouseEvent) => void;
 }
@@ -17,7 +16,6 @@ export interface ICard<T> {
 }
 
 export class Card<T> extends Component<ICard<T>> {
-	
 	protected element: HTMLElement;
 	protected events: IEvents;
 	protected cardCategory: HTMLElement;
@@ -29,43 +27,61 @@ export class Card<T> extends Component<ICard<T>> {
 	// protected basketButton: HTMLButtonElement;
 	protected cardId: string;
 	private _status: boolean;
+	protected setImage(element: HTMLImageElement, src: string, alt?: string) {
+		if (element) {
+			element.src = src;
+			if (alt) element.alt = alt;
+		}
+	}
+
+	protected setPrice(element: HTMLSpanElement, value: any) {
+		if (element) element.textContent = String(value);
+	}
+
 	protected get status(): boolean {
 		return this._status;
 	}
 	protected set status(value: boolean) {
 		this._status = value;
 	}
-	container: any;
-	setText: any;
-	setImage: any;
-	setPrice: any;
 
-	constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
-			super(container);
+	constructor(
+		protected blockName: string,
+		container: HTMLElement,
+		actions?: ICardActions
+	) {
+		super(container);
 
-			this.cardCategory = container.querySelector(`.${blockName}cardCategory`);
-			this. cardTitle = ensureElement<HTMLElement>(`.${blockName} cardTitle`, container);
-			this.cardDescription = container.querySelector(`.${blockName}cardDescription`);
-			this.cardImage = ensureElement<HTMLImageElement>(`.${blockName}cardImage`, container);
-			this.cardPrice = container.querySelector(`.${blockName}cardPrice`);
-			this.cardButton = container.querySelector(`.${blockName}cardButton`);
+		this.cardCategory = container.querySelector(`.${blockName}cardCategory`);
+		this.cardTitle = ensureElement<HTMLElement>(
+			`.${blockName} cardTitle`,
+			container
+		);
+		this.cardDescription = container.querySelector(
+			`.${blockName}cardDescription`
+		);
+		this.cardImage = ensureElement<HTMLImageElement>(
+			`.${blockName}cardImage`,
+			container
+		);
+		this.cardPrice = container.querySelector(`.${blockName}cardPrice`);
+		this.cardButton = container.querySelector(`.${blockName}cardButton`);
 
-
-			if (actions?.onClick) {
-					if (this.cardButton) {
-							this.cardButton.addEventListener('click', actions.onClick);
-					} else {
-							container.addEventListener('click', actions.onClick);
-					}
+		if (actions?.onClick) {
+			if (this.cardButton) {
+				this.cardButton.addEventListener('click', actions.onClick);
+			} else {
+				container.addEventListener('click', actions.onClick);
 			}
+		}
 	}
 
 	set id(value: string) {
-			this.container.dataset.id = value;
+		this.container.dataset.id = value;
 	}
 
 	get id(): string {
-			return this.container.dataset.id || '';
+		return this.container.dataset.id || '';
 	}
 
 	set category(value: string) {
@@ -77,45 +93,45 @@ export class Card<T> extends Component<ICard<T>> {
 	}
 
 	set title(value: string) {
-			this.setText(this.cardTitle, value);
+		this.setText(this.cardTitle, value);
 	}
 
 	get title(): string {
-			return this.cardTitle.textContent || '';
+		return this.cardTitle.textContent || '';
 	}
 
 	set description(value: string | string[]) {
 		if (Array.isArray(value)) {
-				this.cardDescription.replaceWith(...value.map(str => {
-						const descriptionTemplate = this.cardDescription.cloneNode() as HTMLElement;
-						this.setText(descriptionTemplate, str);
-						return descriptionTemplate;
-				}));
+			this.cardDescription.replaceWith(
+				...value.map((str) => {
+					const descriptionTemplate =
+						this.cardDescription.cloneNode() as HTMLElement;
+					this.setText(descriptionTemplate, str);
+					return descriptionTemplate;
+				})
+			);
 		} else {
-				this.setText(this.cardDescription, value);
+			this.setText(this.cardDescription, value);
 		}
-}
+	}
 
 	set image(value: string) {
-			this.setImage(this.cardImage, value, this.title)
+		this.setImage(this.cardImage, value, this.title);
 	}
 
 	get price(): string {
 		return this.cardPrice.textContent || '';
-}
+	}
 
-set price(value: string) {
-	if (value) {
-				this.setText(this.cardPrice, `${value} синапсов`)
+	set price(value: string) {
+		if (value) {
+			this.setText(this.cardPrice, `${value} синапсов`);
 		} else {
-				this.setText(this.cardPrice, `Бесценно`)
-				this.setPrice(this.cardPrice, true);
+			this.setText(this.cardPrice, `Бесценно`);
+			this.setPrice(this.cardPrice, true);
 		}
+	}
+	deleteCard() {
+		this.container.remove();
+	}
 }
-deleteCard() {
-	this.container.remove();
-	this.container = null;
-}
-}
-	
-
