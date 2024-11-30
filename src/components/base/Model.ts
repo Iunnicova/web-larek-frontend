@@ -22,16 +22,3 @@ export abstract class Model<T> {
     // далее можно добавить общие методы для моделей
 }
 
-// export class ProductCard extends Model<IOrdering> {
-// 	setCategoryCard(category: string) {
-// 		throw new Error('Method not implemented.');
-// 	}
-// 	id: string;
-// 	description: string;
-// 	image: string;
-// 	title: string;
-// 	category: string;
-// 	price: number | null;
-// 	status: boolean;
-// 	render: any;
-// }
