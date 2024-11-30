@@ -1,215 +1,140 @@
-// import { IProductCard } from './index';
+////Катротчка товара
+
+export interface IAppSateData {
+	products: ICommodityItem[];
+	basket: ICommodityItem[];
+	order: IOrder;
+}
 
 
-import { ApiPostMethods } from '../components/base/api';
-
+// карточки товара
 export interface IProductCard {
-	_id: string;
-	name?: string;
+	id: string;
 	description: string;
-	category: string;
 	image: string;
 	title: string;
+	category: string;
 	price: number | null;
 }
 
-export interface IUser {
-	clearBid: unknown;
-	status: string;
-	_id: string;
-	payment?: string;
-	total?: number;
-	items?: string;
+// формы
+export interface IOrder {
+	id?: string;
+	payment: string;
+	title?: string;
+	email: string;
+	phone: string;
+	address: string;
+	total: number;
+	price?: number;
+	items: string[];
+}
+
+export interface ICommodityItem extends IProductCard {
+	statusBasket: boolean;
+}
+
+export interface IFormOrder{
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+}
+
+///////////******+++++++++++++++++++++ */
+
+//Интерфейс карточки товара
+
+// export interface IProductCard {
+// 	id: string;
+// 	description?: string | string[];
+// 	image: string;
+// 	title: string;
+// 	category: string;
+// 	price: number;
+// }
+
+//Интерфейс формы
+
+export interface IFormUser {
+	id: string;
+	title: string;
+	price: number;
 	address: string;
 	email: string | number;
 	phone: number;
 }
+
+// Интерфейс для хранения всех карточек
+
+////Корзина
 
 export interface IEventEmitter {
 	emit: (event: string, data: unknown) => void;
 }
 
-export interface IProduct {
-	image: string;
+export interface IAppSateData {
+	products: ICommodityItem[];
+	basket: ICommodityItem[];
+	order: IOrder;
+}
+
+export interface ICommodityItem extends IProductCard {
+	statusBasket: boolean;
+}
+
+export interface IFormOrder {
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+}
+
+//заказ
+
+// export interface IOrder {
+// 	order: IOrder;
+// 	id?: string;
+// 	products?: IProductCard[];
+// 	address: string;
+// 	email: string;
+// 	phone: '';
+// 	items?: string[];
+// 	payment: string;
+// 	result: number;
+// 	size: number;
+// 	total?: number;
+// }
+
+//ErrorForm - представляет объект с ключами. Partial - объект может иметь не все ключи из IOrder.
+export type ErrorForm = Partial<Record<keyof IOrder, string>>;
+
+//API
+
+export interface IAApi {
 	id: string;
-	title: string;
-	name?: string;
-	price?: number;
-	items?: string;
-}
-
-export interface IEvents {
-	// url: string;
-	// total: number;
-	emit: (event: string, data?: unknown) => void;
-}
-
-export interface IBasket {
-	forEach(arg0: (item: { basketState: boolean }) => void): unknown;
-	_items: Map<string, number>;
-	_add(id: string): void;
-	_total: number;
-	_remove(id: string): void;
-	_id?: string;
-	_data?: string;
-}
-
-export type TModalData = {
-	content: HTMLElement;
-};
-
-export interface IViewModel {
-	content: HTMLElement;
-	open(): void;
-	close(): void;
-	toggleButton(state: boolean): void;
-	render(data: TModalData): HTMLElement;
-}
-
-export interface IFormContacts {
-	address: string;
-	email: string | number;
-	phone: number;
-}
-
-export interface ICatalogModel {
-	items: IProduct[];
-	setItems(items: IProduct[]): void;
-	getProduct(id: string): IProduct;
-}
-
-export interface ICard {
-
-	likes: unknown;
-	title: string;
-	description?: string | string[];
-	image: string;
-	emit?: boolean;
-	status: boolean;
-	_id?: string;
-}
-
-//Интерфейс Модели для хранения данных товара
-export interface ICatalogModel {
-	items: IProduct[];
-	setItems(items: IProduct[]): void;
-	getProduct(id: string): IProduct;
-}
-
-export interface CApp {
-	catalog: IUser[];
+	catalog: ICatalog[];
 	basket: string[];
-	loading: boolean;
-	preview: string | null;
-	order: number,
-}
-
-export interface IOrderForm {
-	
-	price: unknown;
-	clearBid(): unknown;
-	isParticipate: boolean;
-	status: string;
-	CLots: boolean;
-	items: string[];
-	reduce: boolean;
-	payment: string;
-	total: 0;
-	address: string;
-	email: string;
-	phone: string;
-	_id?: string;
-}
-
-export interface IOrdering {
-	isClosed: unknown;
-	isActive: unknown;
-	price: string | number;
-	clearBid(): unknown;
-	isParticipate: boolean;
-	CLots: boolean;
-	items: string[];
-	reduce: boolean;
-	payment: string;
-	total: 0;
-	address: string;
-	email: string;
-	phone: string;
-	_id?: string;
-	title: string;
-	image: string;
-	category: string;
-	status: boolean;
-	about: string;
-	item: string;
-}
-
-export interface IOrder extends IOrderForm {
-	items: string[];
-	payment: string;
-	address: string;
-	email: string;
-	phone: string;
-	total: 0;
-	itemId: [];
-	order: IOrdering | IOrder
-	title: string[];
-}
-
-export interface IPage {
-	counter: number;
-	catalog: HTMLElement[];
-	locked: boolean;
-}
-
-export interface ISuccess {
-	total: number;
-	onClick: () => void;
-}
-
-export interface IApiShop {
-	getList: () => Promise<IProduct[]>;
-	getItem: (id: string) => Promise<IProduct>;
-	orderProduct: (order: IOrder) => Promise<IOrderForm>;
-	get: (uri: string) => Promise<object>;
-	post: (uri: string, data: object, method: ApiPostMethods) => Promise<object>;
-	url: URL;
-	options: Request;
-	cdnUrl: string;
-}
-
-export interface IAppState {
-	catalog: IOrderForm[];
-	basket: string[];
-	preview: string | null;
+	preview: string;
 	order: IOrder | null;
 	loading: boolean;
-	// payment: string;
-	total: 0;
-	_id: string;
 }
 
-// Интерфейс отображение компонентов
-// //+Интерфейс для класса отображения
-export interface IView {
-	render(data?: object): HTMLElement;
-	id?: string;
-	title?: string;
-}
-// //+ Интерфейс для конструктора
-export interface IViewConstructor {
-	new (container: HTMLElement, events?: IEventEmitter): IView;
-}
+export type ICatalog = IProductCard & IFormUser;
 
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
-//используем утилиту Pick - выбирает указанные свойства из типа/интерфейса
-export type TProductInformation = Pick<
-	IProductCard,
-	'image' | 'description' | 'category' | 'title' | 'price'
->;
-export type TDataСustomer = Pick<IUser, 'address' | 'email' | 'phone'>;
-export type TBasket = Pick<IProductCard, 'title' | 'price'>;
-export type TPaymentForm = Pick<IUser, 'address'>;
-export type TContactForm = Pick<IUser, 'email' | 'phone'>;
-export type TSuccessfulPurchase = Pick<IProductCard, 'title' | 'price'>;
+export type Catalog = {
+	catalog: Catalog[];
+};
+
+// //используем утилиту Pick - выбирает указанные свойства из типа/интерфейса
+
+// //Модальное окно формы оплаты
+// export type TModalPayment = Pick<IProductUser, 'address' | 'title' | 'price'>;
+
+// //Модальное окно форма контактов
+// export type TModalContact = Pick<IProductUser, 'email' | 'phone'>;
+
+// // Модальное окно успешной покупки
+// export type TModalSuccessPurchase = Pick<IProductCard, 'title' | 'price'>;

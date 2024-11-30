@@ -6,9 +6,9 @@ export type ApiListResponse<Type> = {
 export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 
 export class Api {
-		static getCatalog() {
-			throw new Error('Method not implemented.');
-		}
+		// static getCatalog() {
+		// 	throw new Error('Method not implemented.');
+		// }
     readonly baseUrl: string;
     protected options: RequestInit;
 

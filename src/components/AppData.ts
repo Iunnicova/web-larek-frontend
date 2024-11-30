@@ -1,135 +1,169 @@
 import {
-	FormErrors,
-	IAppState,
-	IFormContacts,
+	IAppSateData,
+	IProductCard,
+	ICommodityItem,
 	IOrder,
-	IOrderForm,
-	IOrdering,
+	//PaymentType,
+	ErrorForm,
+	IFormOrder,
 } from '../types';
 import { Model } from './base/Model';
 
-//  interface IOrdering {
-// 	isClosed: unknown;
-// 	isActive: unknown;
-// 	price: string | number;
-// 	clearBid(): unknown;
-// 	isParticipate: boolean;
-// 	CLots: boolean;
-// 	items: string[];
-// 	reduce: boolean;
-// 	payment: string;
-// 	total: 0;
-// 	address: string;
-// 	email: string;
-// 	phone: string;
-// 	_id?: string;
-// 	title: string;
-// 	image: string;
-// 	category: string;
-// 	status: boolean;
-// 	about: string;
-// 	item: string;
-// }
-
-//  interface IOrder extends IOrderForm {
-// 	items: string[];
-// 	payment: string;
-// 	address: string;
-// 	email: string;
-// 	phone: string;
-// 	total: 0;
-// 	itemId: [];
-// 	order: IOrdering | IOrder
-// 	title: string[];
-// }
-
-export type CatalogChangeEvent = {
-	catalog: IOrdering[];
-};
-
-export class AppState extends Model<IAppState> {
-	basket: string[];
-	catalog: IOrdering[];
-	loading: boolean;
-	products: IOrdering[];
-	order: IOrder = {
+export class AppState extends Model<IAppSateData> {
+	protected goods: ICommodityItem[];
+	protected basket: ICommodityItem[];
+	protected order: IOrder = {
+		payment: '',
+		address: '',
 		email: '',
 		phone: '',
 		items: [],
-		payment: '',
-		address: '',
 		total: 0,
-		itemId: [],
-		clearBid: function (): unknown {
-			throw new Error('Function not implemented.');
-		},
-		// price: undefined,
-		price: undefined,
-		isParticipate: false,
-		status: '',
-		CLots: false,
-		reduce: false,
-		order: undefined,
-		title: []
 	};
+	errorForm: ErrorForm = {};
 	preview: string | null;
-	formErrors: FormErrors = {};
-	updateBasket: any;
+	orderForm: unknown;
 
-	toggleOrderedLot(id: string, isIncluded: boolean) {
-		if (isIncluded) {
-			this.order.items = [...this.order.items, id];
+	//*Генерирует событие «preview:changed» с указанным элементом.*
+	// setPreviewCard(item: ICommodityItem) {
+	// 	this.emitChanges('preview:changed', item);
+	// }
+	setViewing(item: ICommodityItem) {
+		this.preview = item.id;
+		this.emitChanges('viewing:changed', item);
+	}
+
+	//**принимает массив товаров (item) и обновляет каталог*
+	// setProduct(items: IProduct[]) {
+	// 	this.products = items.map((item) => ({
+	// 		...item,
+	// 		basketState: false,
+	// 	}));
+	// 	this.emitChanges('gallery:changed', { products: this.products });
+	// }
+
+	setCatalog(items: IProductCard[]): void {
+		this.goods = items.map((item) => ({ ...item, statusBasket: false }));
+		this.emitChanges('catalog:changed');
+	}
+
+	//*метод обновления корзины. Фильтрует массив
+	updateBasket() {
+		this.basket = this.goods.filter((item) => item.statusBasket);
+		this.events.emit('basket:changed', this.basket);
+	}
+	//**Возвращает текущий список продуктов.*
+	// getProducts(): IProductItem[] {
+	// 	return this.goods;
+	// }
+	getCatalog(): ICommodityItem[] {
+		return this.goods;
+	}
+
+	//*Обновляет общую стоимость заказа и список товаров из корзины и возвращает обновленный заказ.*
+	// getOrder(): IOrder {
+	// 	this.order.total = this.getTotal();
+	// 	this.order.items = this.getGoodsBasket().map(item => item.id);
+	// 	return this.order;
+	// }
+
+	getOrder(): IOrder {
+		this.order.total = this.getTotal();
+		const goodsBasket = this.getGoodsBasket();
+
+		if (!Array.isArray(goodsBasket)) {
+			this.order.items = [];
 		} else {
-			this.order.items = this.order.items.filter((itemId) => itemId !== id);
+			this.order.items = goodsBasket.map((item) => item.id);
+		}
+
+		return { ...this.order };
+	}
+
+	//*Отмечает товар как добавленный в корзину, устанавливая его basket на true.
+	// addToBasket(item: ICommodityItem) {
+	// 	this.goods.find(product => item.id === product.id).statusBasket = true;
+	// }
+	inBasket(item: ICommodityItem) {
+		const index = this.goods.findIndex((product) => product.id === item.id);
+		if (index !== -1) {
+			this.goods[index].statusBasket = true;
+		}
+	}
+	//*Отмечает товар как удаленный из корзины, устанавливая его basket false.
+	// FromBasket(item: ICommodityItem) {
+	// 	this.goods.find(product => item.id === product.id).statusBasket = false;
+	// }
+	FromBasket(item: ICommodityItem) {
+		const index = this.goods.findIndex((product) => product.id === item.id);
+		if (index !== -1) {
+			this.goods[index].statusBasket = false;
+			this.updateBasket();
+		}
+	}
+	//* Рассчитывает и возвращает общую стоимость всех товаров в корзине.*
+	// getTotal(): number {
+	// 	return this.basket.reduce((accum, currentValue) => {
+	// 		return accum + currentValue.price;
+	// 	}, 0);
+	// }
+
+	getTotal() {
+		return this.basket.reduce((a, c) => {
+			if (c.statusBasket) {
+				return a + c.price;
+			}
+			return a;
+		}, 0);
+	}
+
+	//* Фильтрует и возвращает товары, отмеченные как добавленные в корзину.
+	// getBasketItems(): ICommodityItem[] {
+	// 	this.basket = this.goods.filter((item) => {
+	// 		return item.statusBasket === true;
+	// 	});
+
+	// 	return this.basket;
+	// }
+
+	getGoodsBasket(): ICommodityItem[] {
+		// Проверка, является ли this.goods массивом
+		if (!Array.isArray(this.goods)) {
+			return [];
+		}
+		this.basket = this.goods.filter((item) => item.statusBasket);
+
+		return this.basket;
+	}
+
+	// * меняет состояние товара в корзине
+	// clearBasket() {
+	// 	this.basket.forEach((item) => {
+	// 		item.statusBasket = false;
+	// 	});
+	// }
+
+	clearBasket() {
+		this.basket.forEach((item) => (item.statusBasket = false));
+	}
+
+	//*  Устанавливает определенное поле формы заказа и проверяет заказ.
+	// setOrderField(field: keyof (IFormOrder), value: string) {
+	// 	this.order[field] = value;
+	// 	this.validateOrder();
+	// }
+
+	setOrderField(field: keyof IFormOrder, value: string) {
+		this.order[field] = value;
+
+		if (this.validateOrder()) {
+			this.events.emit('order:ready', this.order);
 		}
 	}
 
-	addToBasket(item: string) {
-		this.basket.push(item);
-		this.updateBasket();
-	}
-
-	clearBasket() {
-		this.order.items.forEach((id) => {
-			this.toggleOrderedLot(id, false);
-			this.catalog.find((it) => it._id === id).clearBid();
-		});
-	}
-
-	//рассчитать общую стоимость товаров в заказе
-	getTotal() {
-    return this.order.items.reduce((total, itemId) => {
-        const item = this.catalog.find((it) => it._id === itemId);
-        return total + (item ? Number(item.price) : 0);
-    }, 0);
-}
-
-	setCatalog(items: IOrdering[]): void {
-		this.catalog = items;
-		this.emitChanges('catalogUpdated', items);
-	}
-
-	setPreview(item: IOrdering) {
-		this.preview = item._id;
-		this.emitChanges('preview:changed', item);
-	}
-
-	getActiveLots(): IOrdering[] {
-		return this.catalog.filter(IOrdering => IOrdering.isActive);
-}
-
-	getClosedLots(): IOrdering[] {
-		return this.catalog.filter(IOrdering => IOrdering.isClosed);
-	}
-
-	setOrderField(field: keyof IFormContacts , value: string): void {
-		this.order[field] = value;
-		this.validateOrder();
-}
-
-
+	// * Проверяет каждое поле формы заказа, обновляет formErrorsобъект, генерирует событие «formErrors:change» и возвращает логическое значение, указывающее, действительна ли форма.
 	validateOrder() {
-		const errors: typeof this.formErrors = {};
+		const errors: typeof this.errorForm = {};
 		if (!this.order.payment) {
 			errors.payment = 'Необходимо выбрать способ оплаты';
 		}
@@ -143,24 +177,8 @@ export class AppState extends Model<IAppState> {
 			errors.phone = 'Необходимо указать телефон';
 		}
 
-		this.formErrors = errors;
-		this.events.emit('formErrors:change', this.formErrors);
+		this.errorForm = errors;
+		this.events.emit('errorForm:change', this.errorForm);
 		return Object.keys(errors).length === 0;
 	}
-
-	// Подготовка заказа
-	getOrder(): IOrderForm {
-		return this.order;
 }
-
-// Реализация получения элементов корзины
-getBasketItems(): string[] {
-	try {
-			return this.basket;
-	} catch (error) {
-			console.error("Failed to get basket items:", error);
-			return [];
-	}
-}
-}
-

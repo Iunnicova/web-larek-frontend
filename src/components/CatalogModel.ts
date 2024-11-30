@@ -1,30 +1,53 @@
-import { IProduct } from "../types";
 
-//интерфейс для хранения списков товаров
-interface ICatalogModel {
-	items: IProduct[];
-	setItems(items: IProduct[]): void; //чтобы установить после загрузки из апи
-	getProduct(id: string): IProduct; //чтобы получить при рендере списка
-}
+// import { ICatalogModel, IProduct } from '../types';
+// import { EventEmitter } from './base/events';
 
-export class CatalogModel implements ICatalogModel {
-	items: IProduct[] = [];
-	setItems(items: IProduct[]): void {
-			this.items = items;
-	}
+// // //Описание товара
+// // interface IProduct {
+// // 	id: string;
+// // 	title: string;
+// // }
 
-	getProduct(id: string): IProduct {
-			const product = this.items.find(item => item.id === id);
-			if (!product) {
-					throw new Error(`Product with ID ${id} not found`);
-			}
-			return product;
-	}
+// // //Хранение списка товаров
+// // interface ICatalogModel {
+// // 	items: IProduct[];
+// // 	setItems(items: IProduct[]): void; //устанавливаем после загрузки API
+// // 	getProduct(id: string): IProduct; //получаем при рендере списки
+// // }
 
-	getProducts(): IProduct[] {
-			return this.items;
-	}
-}
+// export class CatalogModel implements ICatalogModel {
+// 	private events;
+// 	items: IProduct[] = [];
 
+// 	constructor(events: EventEmitter) {
+// 		this.events = events;
+// 	}
 
+// 	setItems(items: IProduct[]): void {
+// 		this.items = items;
+// 	}
 
+// 	getProduct(id: string): IProduct {
+// 		const product = this.items.find((product) => product.id === id);
+// 		if (!product) {
+// 			throw new Error('уупс');
+// 		}
+// 		return product;
+// 	}
+// }
+
+// // export class CatalogModel implements ICatalogModel {
+// // 	items: IProduct[] = [];
+
+// // 	setItems(items: IProduct[]): void {
+// // 			this.items = items;
+// // 	}
+
+// // 	getProduct(id: string): IProduct {
+// // 			const product = this.items.find(product => product.id === id);
+// // 			if (!product) {
+// // 					throw new Error("Ppppp");
+// // 			}
+// // 			return product;
+// // 	}
+// // }
