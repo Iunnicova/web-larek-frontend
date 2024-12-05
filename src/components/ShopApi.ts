@@ -1,10 +1,15 @@
 import { IOrder, IProductCard } from '../types';
 import { Api, ApiListResponse } from './base/api';
 
+export interface IOrderShop {
+	id: string;
+	total: number;
+}
+
 export interface IApiShop {
 	getListItem: () => Promise<IProductCard[]>;
 	getItem: (id: string) => Promise<IProductCard>;
-	orderGoods: (order: IOrder) => Promise<IOrderResult>;
+	orderGoods: (order: IOrder) => Promise<IOrderShop>;
 }
 
 export class ApiShop extends Api implements IApiShop {
@@ -31,7 +36,7 @@ export class ApiShop extends Api implements IApiShop {
 		}));
 	}
 
-	orderGoods(order: IOrder): Promise<IOrderResult> {
-		return this.post('/order', order).then((data: IOrderResult) => data);
+	orderGoods(order: IOrder): Promise<IOrderShop> {
+		return this.post('/order', order).then((data: IOrderShop) => data);
 	}
 }

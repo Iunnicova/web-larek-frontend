@@ -51,4 +51,9 @@ export abstract class Component<T> {
         Object.assign(this as object, data ?? {});
         return this.container;
     }
+
+		//скрываtn элемент на веб-странице
+	protected hiddenElementClass(link: HTMLElement, value: unknown) {
+		if (link) link.classList.add(String(value));
+	}
 }
