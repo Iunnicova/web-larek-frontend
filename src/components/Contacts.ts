@@ -9,7 +9,6 @@ export class Contacts extends Form<IFormOrder> {
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		// Инициализация элементов формы
 		this._email = this.inputElement('email');
 		this._phone = this.inputElement('phone');
 	}

@@ -1,12 +1,7 @@
+import { IPageData } from '../types';
 import { ensureElement } from '../utils/utils';
 import { Component } from './base/Components';
 import { IEvents } from './base/events';
-
-export interface IPageData {
-	counter: number;
-	_catalog: HTMLElement[];
-	locked: boolean;
-}
 
 export class Page extends Component<IPageData> {
 	protected _gallery: HTMLElement;
@@ -18,7 +13,6 @@ export class Page extends Component<IPageData> {
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 
-		// this.events = events;
 		this._counter = ensureElement<HTMLElement>('.header__basket-counter');
 		this._gallery = ensureElement<HTMLElement>('.gallery');
 		this._wrapper = ensureElement<HTMLElement>('.page__wrapper');

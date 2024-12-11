@@ -81,6 +81,7 @@ export function setElementData<T extends Record<string, unknown> | object>(el: H
 /**
  * Получает типизированные данные из dataset атрибутов элемента
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function getElementData<T extends Record<string, unknown>>(el: HTMLElement, scheme: Record<string, Function>): T {
     const data: Partial<T> = {};
     for (const key in el.dataset) {

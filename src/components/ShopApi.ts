@@ -1,16 +1,5 @@
-import { IOrder, IProductCard } from '../types';
+import { IApiShop, IOrder, IOrderShop, IProductCard } from '../types';
 import { Api, ApiListResponse } from './base/api';
-
-export interface IOrderShop {
-	id: string;
-	total: number;
-}
-
-export interface IApiShop {
-	getListItem: () => Promise<IProductCard[]>;
-	getItem: (id: string) => Promise<IProductCard>;
-	orderGoods: (order: IOrder) => Promise<IOrderShop>;
-}
 
 export class ApiShop extends Api implements IApiShop {
 	readonly cdn: string;

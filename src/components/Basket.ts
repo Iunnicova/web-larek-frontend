@@ -1,13 +1,8 @@
+import { IAction, IBasketView } from '../types';
 import { createElement, ensureElement, formatNumber } from '../utils/utils';
 import { Component } from './base/Components';
 import { EventEmitter } from './base/events';
-import { Card, IAction } from './Cards';
-
-interface IBasketView {
-	items: HTMLElement[];
-	total: number;
-	selected: string[];
-}
+import { Card } from './Cards';
 
 export class Basket extends Component<IBasketView> {
 	protected _list: HTMLElement;
@@ -30,7 +25,7 @@ export class Basket extends Component<IBasketView> {
 		this.items = [];
 	}
 
-	//метод устанавливает список товаров в корзине
+	//* устанавливает список товаров в корзине
 	set items(items: HTMLElement[]) {
 		if (items.length) {
 			this._list.replaceChildren(...items);
@@ -43,7 +38,7 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-	//метод управляет доступностью кнопки оформления заказа.
+	//* управляет доступностью кнопки оформления заказа.
 	set selected(items: string[]) {
 		if (items.length) {
 			this.setDisabled(this._button, false);
@@ -52,14 +47,14 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-	// метод устанавливает текст элемента _total в форматированное значение общей стоимости
+	//* устанавливает текст элемента _total в форматированное значение общей стоимости
 	set total(value: number) {
 		const formattedValue = formatNumber(value) + ' синапсов';
 		this.setText(this._total, formattedValue);
 	}
 }
 
-//проверяет найден ли элемент, и если нет, выводит ошибку в консоль.
+//*проверяет найден ли элемент, и если нет, выводит ошибку в консоль.
 export class CardBasket extends Card {
 	protected _index: HTMLElement;
 

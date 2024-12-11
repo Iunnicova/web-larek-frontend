@@ -1,4 +1,4 @@
-export interface IAppSateData {
+export interface IAppData {
 	products: ICommodityItem[];
 	basket: ICommodityItem[];
 	order: IOrder;
@@ -11,6 +11,15 @@ export interface IProductCard {
 	title: string;
 	category: string;
 	price: number | null;
+}
+
+export interface ICardData extends IProductCard {
+	buttonLabel: boolean;
+	index?: number;
+}
+
+export interface IAction {
+	onClick?: () => void;
 }
 
 export interface IOrder {
@@ -27,6 +36,15 @@ export interface IOrder {
 
 export interface ICommodityItem extends IProductCard {
 	statusBasket: boolean;
+}
+
+export interface IModalData {
+	content: HTMLElement;
+}
+
+export interface IFormState {
+	valid: boolean;
+	errors: string[];
 }
 
 export interface IFormOrder {
@@ -49,7 +67,13 @@ export interface IEventEmitter {
 	emit: (event: string, data: unknown) => void;
 }
 
-export interface IAppSateData {
+export interface IBasketView {
+	items: HTMLElement[];
+	total: number;
+	selected: string[];
+}
+
+export interface IAppData {
 	products: ICommodityItem[];
 	basket: ICommodityItem[];
 	order: IOrder;
@@ -75,6 +99,31 @@ export interface IAApi {
 	preview: string;
 	order: IOrder | null;
 	loading: boolean;
+}
+
+export interface IOrderShop {
+	id: string;
+	total: number;
+}
+
+export interface IApiShop {
+	getListItem: () => Promise<IProductCard[]>;
+	getItem: (id: string) => Promise<IProductCard>;
+	orderGoods: (order: IOrder) => Promise<IOrderShop>;
+}
+
+export interface IPageData {
+	counter: number;
+	_catalog: HTMLElement[];
+	locked: boolean;
+}
+
+export interface ISuccess {
+	description: number;
+}
+
+export interface ISuccesssAction {
+	onClick: () => void;
 }
 
 export type ICatalog = IProductCard & IFormUser;

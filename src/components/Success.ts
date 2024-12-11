@@ -1,13 +1,6 @@
+import { ISuccess, ISuccesssAction } from '../types';
 import { ensureElement, formatNumber } from '../utils/utils';
 import { Component } from './base/Components';
-
-interface ISuccess {
-	description: number;
-}
-
-interface ISuccesssAction {
-	onClick: () => void;
-}
 
 export class Success extends Component<ISuccess> {
 	protected _description: HTMLElement;
@@ -16,7 +9,7 @@ export class Success extends Component<ISuccess> {
 	constructor(container: HTMLElement, actions: ISuccesssAction) {
 		super(container);
 
-		// Получаем необходимые элементы из контейнера и выполняем проверку
+		//* Получаем необходимые элементы из контейнера и выполняем проверку
 		this._button = ensureElement<HTMLElement>(
 			'.order-success__close',
 			container
@@ -26,13 +19,13 @@ export class Success extends Component<ISuccess> {
 			container
 		);
 
-		// Присваиваем обработчик клика на кнопку, если он существует
+		//* Присваиваем обработчик клика на кнопку, если он существует
 		if (actions?.onClick) {
 			this._button.addEventListener('click', actions.onClick);
 		}
 	}
 
-	// Получение и установка описания заказа
+	//* Получение и установка описания заказа
 	set description(value: number) {
 		if (this._description) {
 			this.setText(

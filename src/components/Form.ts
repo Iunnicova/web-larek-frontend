@@ -1,14 +1,10 @@
+import { IFormState } from '../types';
 import { ensureElement } from '../utils/utils';
 import { Component } from './base/Components';
 import { IEvents } from './base/events';
 
-interface IFormState {
-	valid: boolean;
-	errors: string[];
-}
 export class Form<T> extends Component<IFormState> {
 	protected form: HTMLFormElement;
-	// protected events: IEvents;
 	protected _submit: HTMLButtonElement;
 	protected _errors: HTMLElement;
 
@@ -34,18 +30,9 @@ export class Form<T> extends Component<IFormState> {
 			const value = target.value;
 			this.onInputChange(field, value);
 		});
-
-	//** */
-	this.container.addEventListener('submit', (e: Event) => {
-		e.preventDefault();
-		this.events.emit(`${this.container.name}:submit`);
-	});
-	///** */
 	}
 
-
-
-	//метод, который вызывается при изменении значения поля в форме
+	//*метод который вызывается при изменении значения поля в форме
 	protected onInputChange(field: keyof T, value: string) {
 		this.events.emit(`${this.container.name}.${String(field)}:change`, {
 			field,
@@ -53,22 +40,22 @@ export class Form<T> extends Component<IFormState> {
 		});
 	}
 
-	//сеттер, который устанавливает значение свойства errors
+	//*сеттер который устанавливает значение свойства errors
 	set errors(value: string) {
 		this.setText(this._errors, value);
 	}
 
-	//сеттер, который устанавливает значение свойства valid
+	//*сеттер который устанавливает значение свойства valid
 	set valid(value: boolean) {
 		this._submit.disabled = !value;
 	}
 
-	// Метод для отображения ошибок
+	//* отображения ошибок
 	private displayErrors(errors: string) {
-		this.errors = errors; // Используем сеттер для установки ошибок
+		this.errors = errors;
 	}
 
-	//метод, который отрисовывает форму с указанными свойствами
+	//* отрисовывает форму с указанными свойствами
 	render(state: Partial<T> & IFormState) {
 		const { valid, errors, ...inputs } = state;
 		super.render({ valid, errors });
