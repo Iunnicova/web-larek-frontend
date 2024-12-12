@@ -5,11 +5,12 @@
 Проект разрабатывается в рамках учебного курса "Frontend-developer"
 
 Демо проекта
-https://iunnicova.github.io/mesto-project-ff/
+https://github.com/Iunnicova/web-larek-frontend.git
+
 
 ##### Ссылка на сайт
+https://github.com/Iunnicova/web-larek-frontend
 
-https://github.com/Iunnicova/web-larek-frontend.git
 
 Важные файлы:
 
