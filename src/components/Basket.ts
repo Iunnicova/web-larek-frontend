@@ -25,7 +25,7 @@ export class Basket extends Component<IBasketView> {
 		this.items = [];
 	}
 
-	//* устанавливает список товаров в корзине
+	//*+устанавливает список товаров в корзине
 	set items(items: HTMLElement[]) {
 		if (items.length) {
 			this._list.replaceChildren(...items);
@@ -38,7 +38,7 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-	//* управляет доступностью кнопки оформления заказа.
+	//*+ устанавливает список товаров в корзине
 	set selected(items: string[]) {
 		if (items.length) {
 			this.setDisabled(this._button, false);
@@ -47,14 +47,14 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-	//* устанавливает текст элемента _total в форматированное значение общей стоимости
+	//*+ устанавливает текст элемента _total в форматированное значение общей стоимости
 	set total(value: number) {
 		const formattedValue = formatNumber(value) + ' синапсов';
 		this.setText(this._total, formattedValue);
 	}
 }
 
-//*проверяет найден ли элемент, и если нет, выводит ошибку в консоль.
+//*+проверяет найден ли элемент, и если нет, выводит ошибку в консоль.
 export class CardBasket extends Card {
 	protected _index: HTMLElement;
 
@@ -67,6 +67,7 @@ export class CardBasket extends Card {
 		);
 	}
 
+	//*+Форматирует и устанавливает текст общей стоимости
 	set index(value: number) {
 		if (typeof value === 'number' && value >= 0) {
 			this.setText(this._index, value.toString());

@@ -20,21 +20,25 @@ export class Modal extends Component<IModalData> {
 		this._content.addEventListener('click', (event) => event.stopPropagation());
 	}
 
+	//*+Устанавливает новое содержимое модального окна
 	set content(value: HTMLElement) {
 		this._content.replaceChildren(value);
 	}
 
+	//*+делает модальное окно видимым
 	open() {
 		this.container.classList.add('modal_active');
 		this.events.emit('modal:open');
 	}
 
+	//*+освобождает содержимое
 	close() {
 		this.container.classList.remove('modal_active');
 		this.content = null;
 		this.events.emit('modal:close');
 	}
 
+	//*+рендерит содержимое
 	render(data: IModalData): HTMLElement {
 		super.render(data);
 		this.open();

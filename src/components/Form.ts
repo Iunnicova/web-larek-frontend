@@ -32,7 +32,7 @@ export class Form<T> extends Component<IFormState> {
 		});
 	}
 
-	//*метод который вызывается при изменении значения поля в форме
+	//*+метод который вызывается при изменении значения поля в форме
 	protected onInputChange(field: keyof T, value: string) {
 		this.events.emit(`${this.container.name}.${String(field)}:change`, {
 			field,
@@ -40,22 +40,22 @@ export class Form<T> extends Component<IFormState> {
 		});
 	}
 
-	//*сеттер который устанавливает значение свойства errors
+	//*+управляет доступностью кнопки отправки
 	set errors(value: string) {
 		this.setText(this._errors, value);
 	}
 
-	//*сеттер который устанавливает значение свойства valid
+	//*+управляет доступностью кнопки отправки формы
 	set valid(value: boolean) {
 		this._submit.disabled = !value;
 	}
 
-	//* отображения ошибок
+	//*+обновляет текст ошибок 
 	private displayErrors(errors: string) {
 		this.errors = errors;
 	}
 
-	//* отрисовывает форму с указанными свойствами
+	//*+ форму с указанными свойствами
 	render(state: Partial<T> & IFormState) {
 		const { valid, errors, ...inputs } = state;
 		super.render({ valid, errors });

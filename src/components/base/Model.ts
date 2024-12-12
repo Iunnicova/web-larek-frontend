@@ -18,5 +18,4 @@ export abstract class Model<T> {
 		this.events.emit(event, payload ?? {});
 	}
 
-	// далее можно добавить общие методы для моделей
 }

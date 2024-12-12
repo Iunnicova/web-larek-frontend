@@ -1,9 +1,4 @@
-export interface IAppData {
-	products: ICommodityItem[];
-	basket: ICommodityItem[];
-	order: IOrder;
-}
-
+//*+ карточка товара
 export interface IProductCard {
 	id: string;
 	description: string;
@@ -18,10 +13,7 @@ export interface ICardData extends IProductCard {
 	index?: number;
 }
 
-export interface IAction {
-	onClick?: () => void;
-}
-
+//*+ описание заказ
 export interface IOrder {
 	id?: string;
 	payment: string;
@@ -34,19 +26,12 @@ export interface IOrder {
 	items: string[];
 }
 
+//*+ есть товар в корзине или нет
 export interface ICommodityItem extends IProductCard {
 	statusBasket: boolean;
 }
 
-export interface IModalData {
-	content: HTMLElement;
-}
-
-export interface IFormState {
-	valid: boolean;
-	errors: string[];
-}
-
+//*+формы заказа
 export interface IFormOrder {
 	payment: string;
 	address: string;
@@ -54,82 +39,60 @@ export interface IFormOrder {
 	phone: string;
 }
 
-export interface IFormUser {
-	id: string;
-	title: string;
-	price: number;
-	address: string;
-	email: string | number;
-	phone: number;
-}
-
-export interface IEventEmitter {
-	emit: (event: string, data: unknown) => void;
-}
-
+//*+ корзина
 export interface IBasketView {
+	selected: string[];
 	items: HTMLElement[];
 	total: number;
-	selected: string[];
 }
 
+//*+ будет вызвано при клике
+export interface IAction {
+	onClick?: () => void;
+}
+
+//*+данныe приложения для хранения 
 export interface IAppData {
 	products: ICommodityItem[];
 	basket: ICommodityItem[];
 	order: IOrder;
 }
 
-export interface ICommodityItem extends IProductCard {
-	statusBasket: boolean;
-}
-
-export interface IFormOrder {
-	payment: string;
-	address: string;
-	email: string;
-	phone: string;
-}
-
+//*+ ошибки валидации форм
 export type ErrorForm = Partial<Record<keyof IOrder, string>>;
 
-export interface IAApi {
-	id: string;
-	catalog: ICatalog[];
-	basket: string[];
-	preview: string;
-	order: IOrder | null;
-	loading: boolean;
+//*+ состояние формы
+export interface IFormState {
+	valid: boolean;
+	errors: string[];
 }
 
-export interface IOrderShop {
-	id: string;
-	total: number;
+//*+данные для модального окна
+export interface IModalData {
+	content: HTMLElement;
 }
 
-export interface IApiShop {
-	getListItem: () => Promise<IProductCard[]>;
-	getItem: (id: string) => Promise<IProductCard>;
-	orderGoods: (order: IOrder) => Promise<IOrderShop>;
-}
-
+//*+ данные страницы
 export interface IPageData {
 	counter: number;
 	_catalog: HTMLElement[];
 	locked: boolean;
 }
 
+//*+ интерфейс API магазина
+export interface IApiShop {
+	getListItem: () => Promise<IProductCard[]>;
+	getItem: (id: string) => Promise<IProductCard>;
+	orderGoods: (order: IOrder) => Promise<IOrderShop>;
+}
+
+//*+ интерфейс для API заказа
+export interface IOrderShop {
+	id: string;
+	total: number;
+}
+
+//*+ успешный результат
 export interface ISuccess {
 	description: number;
 }
-
-export interface ISuccesssAction {
-	onClick: () => void;
-}
-
-export type ICatalog = IProductCard & IFormUser;
-
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
-
-export type Catalog = {
-	catalog: Catalog[];
-};

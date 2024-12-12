@@ -1,10 +1,10 @@
 import {
-	IAppData,
 	IProductCard,
 	ICommodityItem,
 	IOrder,
-	ErrorForm,
 	IFormOrder,
+	IAppData,
+	ErrorForm,
 } from '../types';
 import { Model } from './base/Model';
 
@@ -23,30 +23,30 @@ export class AppData extends Model<IAppData> {
 	preview: string | null;
 	orderForm: unknown;
 
-	//*Генерирует событие «preview:changed» с указанным элементом.*
+	//*+устанавливаем идентификатор товара, который сейчас просматривается
 	setViewing(item: ICommodityItem) {
 		this.preview = item.id;
 		this.emitChanges('viewing:changed', item);
 	}
 
-	//**принимает массив товаров (item) и обновляет каталог*
+	//*+устанавливаем массив товаров
 	setCatalog(items: IProductCard[]): void {
 		this.goods = items.map((item) => ({ ...item, statusBasket: false }));
 		this.emitChanges('catalog:changed');
 	}
 
-	//*метод обновления корзины. Фильтрует массив
+	//*+обновляем корзину товаров
 	updateBasket() {
 		this.basket = this.goods.filter((item) => item.statusBasket);
 		this.events.emit('basket:changed', this.basket);
 	}
 
-	//**Возвращает текущий список продуктов.*
+	//*+возвращаем массив товаров.
 	getCatalog(): ICommodityItem[] {
 		return this.goods;
 	}
 
-	//*Обновляет общую стоимость заказа и список товаров из корзины и возвращает обновленный заказ.*
+	//*+возвращаем объект заказа
 	getOrder(): IOrder {
 		this.order.total = this.getTotal();
 		const goodsBasket = this.getGoodsBasket();
@@ -60,7 +60,7 @@ export class AppData extends Model<IAppData> {
 		return { ...this.order };
 	}
 
-	//*Отмечает товар как добавленный в корзину, устанавливая его basket на true.
+	//*+добавляем товар в корзину
 	inBasket(item: ICommodityItem) {
 		const index = this.goods.findIndex((product) => product.id === item.id);
 		if (index !== -1) {
@@ -68,7 +68,7 @@ export class AppData extends Model<IAppData> {
 		}
 	}
 
-	//*Отмечает товар как удаленный из корзины, устанавливая его basket false.
+	//*+удаляем товар из корзину
 	FromBasket(item: ICommodityItem) {
 		const index = this.goods.findIndex((product) => product.id === item.id);
 		if (index !== -1) {
@@ -77,7 +77,7 @@ export class AppData extends Model<IAppData> {
 		}
 	}
 
-	//* Рассчитывает и возвращает общую стоимость всех товаров в корзине.*
+	//*+ возвращаем общую стоимость товаров в корзине
 	getTotal() {
 		return this.basket.reduce((a, c) => {
 			if (c.statusBasket) {
@@ -87,7 +87,7 @@ export class AppData extends Model<IAppData> {
 		}, 0);
 	}
 
-	//* Фильтрует и возвращает товары, отмеченные как добавленные в корзину.
+	//*+ возвращаем массив товаров в корзине
 	getGoodsBasket(): ICommodityItem[] {
 		if (!Array.isArray(this.goods)) {
 			return [];
@@ -97,12 +97,12 @@ export class AppData extends Model<IAppData> {
 		return this.basket;
 	}
 
-	// * меняет состояние товара в корзине
+	// *+ очищаем корзину
 	clearBasket() {
 		this.basket.forEach((item) => (item.statusBasket = false));
 	}
 
-	//*  Устанавливает определенное поле формы заказа и проверяет заказ.
+	//*+устанавливаем поле заказа
 	setOrderField(field: keyof IFormOrder, value: string) {
 		this.order[field] = value;
 
@@ -111,7 +111,7 @@ export class AppData extends Model<IAppData> {
 		}
 	}
 
-	// * Проверяет каждое поле формы заказа, обновляет formErrorsобъект, генерирует событие «formErrors:change» и возвращает логическое значение, указывающее, действительна ли форма.
+	//*+ проверяем форму заказа на ошибки
 	validateOrder() {
 		const errors: typeof this.errorForm = {};
 		if (!this.order.payment) {

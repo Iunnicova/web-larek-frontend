@@ -1,4 +1,4 @@
-import { IAction, ICardData } from '../types';
+import { IAction, ICardData} from '../types';
 import { ensureElement, formatNumber } from '../utils/utils';
 import { Component } from './base/Components';
 
@@ -29,14 +29,17 @@ export class Card extends Component<ICardData> {
 		}
 	}
 
+	//*+Устанавливаем текст заголовка
 	set title(value: string) {
 		this.setText(this._title, value);
 	}
 
+	//*+Устанавливаем текст описания
 	set description(value: string) {
 		this.setText(this._description, value);
 	}
 
+	//*+ Устанавливаем категорию товара, удаляя предыдущие классы
 	set category(value: string) {
 		this.setText(this._category, value);
 
@@ -67,6 +70,7 @@ export class Card extends Component<ICardData> {
 		}
 	}
 
+	//*+Устанавливаем текст кнопки 
 	set buttonLabel(productState: boolean) {
 		if (productState) {
 			this.setText(this._button, 'Убрать');
@@ -75,10 +79,12 @@ export class Card extends Component<ICardData> {
 		}
 	}
 
+	//*+Устанавливаем изображение товара.
 	set image(value: string) {
 		this.setImage(this._image, value);
 	}
 
+	//*+Устанавливаем цену
 	set price(value: number | null) {
 		if (value === null) {
 			this.setText(this._price, 'Бесценно');
@@ -92,4 +98,6 @@ export class Card extends Component<ICardData> {
 			}
 		}
 	}
+
+	
 }

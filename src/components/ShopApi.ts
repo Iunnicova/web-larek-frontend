@@ -1,7 +1,7 @@
-import { IApiShop, IOrder, IOrderShop, IProductCard } from '../types';
+import { IOrder, IOrderShop, IProductCard } from '../types';
 import { Api, ApiListResponse } from './base/api';
 
-export class ApiShop extends Api implements IApiShop {
+export class ApiShop extends Api implements ApiShop {
 	readonly cdn: string;
 
 	constructor(cdn: string, baseUrl: string, options?: RequestInit) {
@@ -9,6 +9,7 @@ export class ApiShop extends Api implements IApiShop {
 		this.cdn = cdn;
 	}
 
+	//*+Получает список продуктов по API 
 	getListItem(): Promise<IProductCard[]> {
 		return this.get('/product').then((data: ApiListResponse<IProductCard>) =>
 			data.items.map((item) => ({
@@ -18,6 +19,7 @@ export class ApiShop extends Api implements IApiShop {
 		);
 	}
 
+	//*+Получает продукт по его ID.
 	getItem(id: string): Promise<IProductCard> {
 		return this.get(`/product/${id}`).then((item: IProductCard) => ({
 			...item,
@@ -25,6 +27,7 @@ export class ApiShop extends Api implements IApiShop {
 		}));
 	}
 
+	//*+Отправляет заказ на сервер 
 	orderGoods(order: IOrder): Promise<IOrderShop> {
 		return this.post('/order', order).then((data: IOrderShop) => data);
 	}

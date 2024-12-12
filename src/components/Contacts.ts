@@ -13,6 +13,7 @@ export class Contacts extends Form<IFormOrder> {
 		this._phone = this.inputElement('phone');
 	}
 
+	//*+извлечения элемента ввода из формы
 	private inputElement(name: string): HTMLInputElement {
 		const input = this.container.elements.namedItem(name);
 		if (!(input instanceof HTMLInputElement)) {

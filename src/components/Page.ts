@@ -23,14 +23,17 @@ export class Page extends Component<IPageData> {
 		});
 	}
 
+	//*+Устанавливает текстовое значение в элемент и, преобразуя его в строку.
 	set counter(value: number) {
 		this.setText(this._counter, String(value));
 	}
 
+	//*+Заменяет на массив элементов, переданных в качестве аргумента.
 	set gallery(items: HTMLElement[]) {
 		this._gallery.replaceChildren(...items);
 	}
 
+	//*+Добавляет или удаляет класс 
 	set locked(value: boolean) {
 		if (value === true) {
 			this._wrapper.classList.add('page__wrapper_locked');
