@@ -22,6 +22,7 @@ export class Form<T> extends Component<IFormState> {
 		this.container.addEventListener('submit', (evt) => {
 			evt.preventDefault();
 			this.events.emit(`${this.container.name}:submit`);
+			this.container.reset();
 		});
 
 		this.container.addEventListener('input', (e: Event) => {
@@ -50,7 +51,7 @@ export class Form<T> extends Component<IFormState> {
 		this._submit.disabled = !value;
 	}
 
-	//*+обновляет текст ошибок 
+	//*+обновляет текст ошибок
 	private displayErrors(errors: string) {
 		this.errors = errors;
 	}

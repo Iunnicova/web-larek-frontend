@@ -1,4 +1,4 @@
-import { IAction, ICardData} from '../types';
+import { IAction, ICardData } from '../types';
 import { ensureElement, formatNumber } from '../utils/utils';
 import { Component } from './base/Components';
 
@@ -43,7 +43,7 @@ export class Card extends Component<ICardData> {
 	set category(value: string) {
 		this.setText(this._category, value);
 
-		//* Удаляем все текущие классы категории, чтобы не накладывать несколько одновременно
+		//*+ Удаляем все текущие классы категории, чтобы не накладывать несколько одновременно
 		this._category.classList.remove(
 			'card__category_soft',
 			'card__category_other',
@@ -52,7 +52,7 @@ export class Card extends Component<ICardData> {
 			'card__category_button'
 		);
 
-		//* в дальнейшем  можем легко добавлять новые категории
+		//*+ в дальнейшем  можем легко добавлять новые категории
 		const categoryClasses: { [key: string]: string } = {
 			'софт-скил': 'card__category_soft',
 			другое: 'card__category_other',
@@ -61,7 +61,7 @@ export class Card extends Component<ICardData> {
 			кнопка: 'card__category_button',
 		};
 
-		//* добавляем текущую категорию к кнопке, если она есть в списке категорий
+		//*+добавляем текущую категорию к кнопке, если она есть в списке категорий
 		const categoryClass = categoryClasses[value];
 		if (categoryClass) {
 			this._category.classList.add(categoryClass);
@@ -70,7 +70,7 @@ export class Card extends Component<ICardData> {
 		}
 	}
 
-	//*+Устанавливаем текст кнопки 
+	//*+Устанавливаем текст кнопки
 	set buttonLabel(productState: boolean) {
 		if (productState) {
 			this.setText(this._button, 'Убрать');
@@ -98,6 +98,4 @@ export class Card extends Component<ICardData> {
 			}
 		}
 	}
-
-	
 }

@@ -3,33 +3,31 @@ import {
 	ICommodityItem,
 	IOrder,
 	IFormOrder,
-	IAppData,
 	ErrorForm,
+	IPaymentModel,
 } from '../types';
 import { Model } from './base/Model';
 
-export class AppData extends Model<IAppData> {
+export class AppData extends Model<IPaymentModel> {
 	protected goods: ICommodityItem[];
 	protected basket: ICommodityItem[];
-	protected order: IOrder = {
+	order: IOrder = {
 		payment: '',
 		address: '',
 		email: '',
 		phone: '',
-		items: [],
-		total: 0,
 	};
 	errorForm: ErrorForm = {};
 	preview: string | null;
 	orderForm: unknown;
 
-	//*+устанавливаем идентификатор товара, который сейчас просматривается
+	//*+устанавливаем идентификатор, который генерирует событие изменения
 	setViewing(item: ICommodityItem) {
 		this.preview = item.id;
 		this.emitChanges('viewing:changed', item);
 	}
 
-	//*+устанавливаем массив товаров
+	//*+устанавливаем каталог товаров
 	setCatalog(items: IProductCard[]): void {
 		this.goods = items.map((item) => ({ ...item, statusBasket: false }));
 		this.emitChanges('catalog:changed');
@@ -48,16 +46,21 @@ export class AppData extends Model<IAppData> {
 
 	//*+возвращаем объект заказа
 	getOrder(): IOrder {
-		this.order.total = this.getTotal();
+		const total = this.getTotal();
 		const goodsBasket = this.getGoodsBasket();
 
-		if (!Array.isArray(goodsBasket)) {
-			this.order.items = [];
-		} else {
-			this.order.items = goodsBasket.map((item) => item.id);
+		let items: string[] = [];
+		if (Array.isArray(goodsBasket)) {
+			items = goodsBasket.map((item) => item.id);
 		}
 
-		return { ...this.order };
+		const order = {
+			...this.order,
+			total,
+			items,
+		};
+
+		return order;
 	}
 
 	//*+добавляем товар в корзину
@@ -69,7 +72,7 @@ export class AppData extends Model<IAppData> {
 	}
 
 	//*+удаляем товар из корзину
-	FromBasket(item: ICommodityItem) {
+	fromBasket(item: ICommodityItem) {
 		const index = this.goods.findIndex((product) => product.id === item.id);
 		if (index !== -1) {
 			this.goods[index].statusBasket = false;

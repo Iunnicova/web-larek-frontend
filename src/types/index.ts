@@ -15,15 +15,10 @@ export interface ICardData extends IProductCard {
 
 //*+ описание заказ
 export interface IOrder {
-	id?: string;
 	payment: string;
-	title?: string;
 	email: string;
 	phone: string;
 	address: string;
-	total: number;
-	price?: number;
-	items: string[];
 }
 
 //*+ есть товар в корзине или нет
@@ -39,7 +34,7 @@ export interface IFormOrder {
 	phone: string;
 }
 
-//*+ корзина
+//*+ кoрзина
 export interface IBasketView {
 	selected: string[];
 	items: HTMLElement[];
@@ -48,14 +43,20 @@ export interface IBasketView {
 
 //*+ будет вызвано при клике
 export interface IAction {
-	onClick?: () => void;
+	onClick: () => void;
 }
 
-//*+данныe приложения для хранения 
+//*+данныe приложения для хранения
 export interface IAppData {
 	products: ICommodityItem[];
 	basket: ICommodityItem[];
 	order: IOrder;
+	payment: IPaymentModel;
+}
+
+//*+хранит информацию о выбранном способе оплаты
+export interface IPaymentModel {
+	payment: string;
 }
 
 //*+ ошибки валидации форм

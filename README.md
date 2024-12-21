@@ -71,7 +71,7 @@ yarn build
 ```
  interface ICardData extends IProductCard {
 	buttonLabel: boolean;
-	index?: number;
+	<!-- index?: number; -->
 }
 ```
 
@@ -79,14 +79,14 @@ yarn build
 
 ```
  interface IOrder {
-	id?: string;
+	<!-- id?: string; -->
 	payment: string;
-	title?: string;
+	<!-- title?: string; -->
 	email: string;
 	phone: string;
 	address: string;
 	total: number;
-	price?: number;
+	<!-- price?: number; -->
 	items: string[];
 }
 ```
@@ -263,6 +263,19 @@ export interface ISuccess {
  `Object.` Копируем свойства из `data` в экземпляр класса\
  `emitChanges` Метод предназначен для уведомления об изменениях в модели
 
+	//*уведомляет презентер о том, что данные изменены
+	//обновляет свойство модели и выдает событие с новым платежом
+	changePayment(value: unknown) {
+		if (typeof value === 'string') {
+			this.payment = value;
+			this.events.emit('errorForm:change', { payment: value });
+		} else {
+			console.warn(value);
+		}
+	}
+
+
+
 ## Слой данных
 
 ### Классы представления
@@ -281,7 +294,7 @@ export interface ISuccess {
 `getCatalog` Возвращаем массив товаров\
 `getOrder` Возвращаем объект заказа\
 `inBasket` Добавляем товар в корзину\
-`FromBasket` Удаляем товар из корзину\
+`fromBasket` Удаляем товар из корзину\
 `getTotal` Возвращаем общую стоимость товаров в корзине\
 `getGoodsBasket` Возвращаем массив товаров в корзине\
 `clearBasket` Очищаем корзину\
@@ -433,3 +446,4 @@ ApiShop расширяет базовый класс Api и предоставл
 `basket:open` открытия корзины  
 `modal:open` открывает модальное окно  
 `modal:close` закрытия модального окна
+`modal_active`

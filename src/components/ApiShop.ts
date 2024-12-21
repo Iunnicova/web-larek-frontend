@@ -9,7 +9,7 @@ export class ApiShop extends Api implements ApiShop {
 		this.cdn = cdn;
 	}
 
-	//*+Получает список продуктов по API 
+	//*+Получает список продуктов по API
 	getListItem(): Promise<IProductCard[]> {
 		return this.get('/product').then((data: ApiListResponse<IProductCard>) =>
 			data.items.map((item) => ({
@@ -27,7 +27,7 @@ export class ApiShop extends Api implements ApiShop {
 		}));
 	}
 
-	//*+Отправляет заказ на сервер 
+	//*+Отправляет заказ на сервер
 	orderGoods(order: IOrder): Promise<IOrderShop> {
 		return this.post('/order', order).then((data: IOrderShop) => data);
 	}

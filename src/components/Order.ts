@@ -1,56 +1,48 @@
 import { IFormOrder } from '../types';
-import { ensureAllElements } from '../utils/utils';
 import { IEvents } from './base/events';
 import { Form } from './Form';
 
-export class Order extends Form<IFormOrder> {
-	protected _paymentButtons: HTMLButtonElement[];
-	protected _addressInput: HTMLInputElement;
+export interface IActions {
+	onClick: (event: MouseEvent) => void;
+}
 
-	constructor(container: HTMLFormElement, events: IEvents) {
+export class Order extends Form<IFormOrder> {
+	protected _buttonOnline: HTMLButtonElement;
+	protected _buttonUponReceipt: HTMLButtonElement;
+	protected _buttons: HTMLButtonElement[];
+
+	constructor(container: HTMLFormElement, events: IEvents, actions?: IActions) {
 		super(container, events);
 
-		//*находит элемент с именем "address" в контейнере и проверяет, является ли он HTML-элементом input. Если нет, генерируется ошибка.
-		const addressElement = container.elements.namedItem('address');
-		if (!(addressElement instanceof HTMLInputElement)) {
-			throw new Error('mistake');
+		this._buttonUponReceipt = container.querySelector('button[name="cash"]');
+
+		this._buttonOnline = container.querySelector('button[name="card"]');
+
+		this._buttons = [this._buttonOnline, this._buttonUponReceipt];
+
+		this._buttonUponReceipt.classList.add('button_alt-active');
+
+		if (actions && actions.onClick) {
+			this._buttonOnline.addEventListener('click', actions.onClick);
+			this._buttonUponReceipt.addEventListener('click', actions.onClick);
 		}
-		this._addressInput = addressElement;
-
-		this._paymentButtons = ensureAllElements<HTMLButtonElement>(
-			'.button_alt',
-			container
-		);
-
-		//*проверяет есть ли у кнопки свойство name
-		this._paymentButtons.forEach((button) => {
-			if (!button.name) {
-				console.warn(button);
-				return;
-			}
-
-			//*добавляет обработчик клика на каждую кнопку платежа
-			button.addEventListener('click', () => {
-				this.selected(button.name);
-				this.events.emit(`${this.form.name}.payment:change`, {
-					field: 'payment',
-					value: button.name,
-				});
-			});
-		});
 	}
 
-	//*устанавливает адрес в поле ввода адреса
-	set address(value: string) {
-		this._addressInput.value = value;
+	//*+ Деактивировать все кнопки и активировать выбранную
+	selected(toggleButton: HTMLButtonElement) {
+		this._buttons.forEach((button) => {
+			button.classList.remove('button_alt-active');
+		});
+		toggleButton.classList.add('button_alt-active');
 	}
 
-	//*выбирает кнопку платежа по имени и добавляет или удаляет класс на кнопке
-	selected(name: string): void {
-		this._paymentButtons.forEach((button) => {
-			if (button.name && typeof button.name === 'string') {
-				this.toggleClass(button, 'button-works', button.name === name);
-			}
-		});
+	//*+ Установка адреса доставки
+	address(value: string) {
+		const addressInput = this.container.elements.namedItem('address');
+		if (addressInput instanceof HTMLInputElement) {
+			addressInput.value = value;
+		} else {
+			console.error('');
+		}
 	}
 }

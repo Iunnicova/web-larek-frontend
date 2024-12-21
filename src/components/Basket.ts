@@ -2,7 +2,7 @@ import { IAction, IBasketView } from '../types';
 import { createElement, ensureElement, formatNumber } from '../utils/utils';
 import { Component } from './base/Components';
 import { EventEmitter } from './base/events';
-import { Card } from './Cards';
+import { Card } from './Card';
 
 export class Basket extends Component<IBasketView> {
 	protected _list: HTMLElement;
@@ -36,6 +36,8 @@ export class Basket extends Component<IBasketView> {
 				})
 			);
 		}
+
+		(this._button as HTMLButtonElement).disabled = items.length === 0;
 	}
 
 	//*+ устанавливает список товаров в корзине

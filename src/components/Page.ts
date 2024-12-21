@@ -33,7 +33,7 @@ export class Page extends Component<IPageData> {
 		this._gallery.replaceChildren(...items);
 	}
 
-	//*+Добавляет или удаляет класс 
+	//*+Добавляет или удаляет класс
 	set locked(value: boolean) {
 		if (value === true) {
 			this._wrapper.classList.add('page__wrapper_locked');

@@ -1,22 +1,22 @@
 import { AppData } from './components/AppData';
 import { EventEmitter } from './components/base/events';
-import { Basket, CardBasket } from './components/Basket';
-import { Card } from './components/Cards';
+import { Basket } from './components/Basket';
+import { Card } from './components/Card';
 import { Contacts } from './components/Contacts';
 import { Modal } from './components/Modal';
 import { Order } from './components/Order';
 import { Page } from './components/Page';
-import { ApiShop } from './components/ShopApi';
+import { ApiShop } from './components/ApiShop';
 import { Success } from './components/Success';
 import './scss/styles.scss';
 import { ICommodityItem, IFormOrder, IProductCard } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, createElement, ensureElement } from './utils/utils';
-// Чтобы мониторить все события, для отладки
+import { CardBasket } from './components/CardBasket';
+
 const events = new EventEmitter();
 const api = new ApiShop(CDN_URL, API_URL);
 
-// Все шаблоны
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
@@ -29,14 +29,11 @@ const modalElement = ensureElement<HTMLElement>('#modal-container');
 
 const pageElement = ensureElement<HTMLElement>('.page');
 
-// Модель данных приложения
 const appData = new AppData({}, events);
 
-// Компоненты приложения
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const page = new Page(pageElement, events);
 const modal = new Modal(modalElement, events);
-const order = new Order(cloneTemplate(orderTemplate), events);
 const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), {
 	onClick: () => {
@@ -44,6 +41,16 @@ const success = new Success(cloneTemplate(successTemplate), {
 	},
 });
 
+const paymentSelection: Record<string, string> = {
+	card: 'online',
+	cash: 'buttonUponReceipt',
+};
+
+const order = new Order(cloneTemplate(orderTemplate), events, {
+	onClick: (event: Event) => {
+		events.emit('payment:changed', event.target);
+	},
+});
 
 //*+обрабатывает событие изменения каталога и рендерит карточки товаров
 events.on<IProductCard>('catalog:changed', () => {
@@ -90,6 +97,15 @@ events.on('contacts:submit', () => {
 		});
 });
 
+//*+Выбор оплаты
+events.on('payment:changed', (target: HTMLButtonElement) => {
+	if (!target.classList.contains('button_alt-active')) {
+		order.selected(target);
+		const paymentMethod = target.getAttribute('name');
+		appData.order.payment = paymentSelection[paymentMethod];
+	}
+});
+
 //*+обновляеm состояние валидности и сообщения об ошибках
 events.on('errorForm:change', (errors: Partial<IFormOrder>) => {
 	const { payment, address } = errors;
@@ -126,7 +142,7 @@ events.on('order:open', () => {
 });
 
 //*+отображение формы контактов
-events.on('order:open', () => {
+events.on('order:submit', () => {
 	modal.render({
 		content: contacts.render({
 			email: '',
@@ -138,7 +154,7 @@ events.on('order:open', () => {
 });
 
 //*+обратывает событие добавления товара в корзину и рендерит карточки товаров в корзине
-events.on('order:open', (item: ICommodityItem) => {
+events.on('card:select', (item: ICommodityItem) => {
 	appData.setViewing(item);
 });
 
@@ -152,7 +168,7 @@ events.on('viewing:changed', (item: ICommodityItem) => {
 			);
 
 			if (isInBasket) {
-				appData.FromBasket(item);
+				appData.fromBasket(item);
 			} else {
 				appData.inBasket(item);
 			}
@@ -182,7 +198,7 @@ events.on('basket:changed', () => {
 	const basketContainer = goodsBasket.map((item, index) => {
 		const card = new CardBasket(cloneTemplate(cardBasketTemplate), {
 			onClick: () => {
-				appData.FromBasket(item);
+				appData.fromBasket(item);
 				events.emit('basket:changed');
 			},
 		});

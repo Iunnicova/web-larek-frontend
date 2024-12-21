@@ -23,7 +23,7 @@ export class Success extends Component<ISuccess> {
 		}
 	}
 
-	//* Получяет и устанавлвает описания заказа
+	//*+ Получяет и устанавлвает описания заказа
 	set description(value: number) {
 		if (this._description) {
 			this.setText(
