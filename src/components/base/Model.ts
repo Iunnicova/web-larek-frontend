@@ -1,10 +1,6 @@
 import { IPaymentModel } from '../../types';
 import { IEvents } from './events';
 
-// interface IPaymentModel {
-//   payment: string
-// }
-
 // Гарда для проверки на модель
 export const isModel = (obj: unknown): obj is Model<never> => {
 	return obj instanceof Model;

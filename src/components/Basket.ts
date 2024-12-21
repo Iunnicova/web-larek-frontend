@@ -1,8 +1,7 @@
-import { IAction, IBasketView } from '../types';
+import { IBasketView } from '../types';
 import { createElement, ensureElement, formatNumber } from '../utils/utils';
 import { Component } from './base/Components';
 import { EventEmitter } from './base/events';
-import { Card } from './Card';
 
 export class Basket extends Component<IBasketView> {
 	protected _list: HTMLElement;
@@ -53,26 +52,5 @@ export class Basket extends Component<IBasketView> {
 	set total(value: number) {
 		const formattedValue = formatNumber(value) + ' синапсов';
 		this.setText(this._total, formattedValue);
-	}
-}
-
-//*+проверяет найден ли элемент, и если нет, выводит ошибку в консоль.
-export class CardBasket extends Card {
-	protected _index: HTMLElement;
-
-	constructor(container: HTMLElement, actions: IAction) {
-		super(container, actions);
-
-		this._index = ensureElement<HTMLSpanElement>(
-			'.basket__item-index',
-			container
-		);
-	}
-
-	//*+Форматирует и устанавливает текст общей стоимости
-	set index(value: number) {
-		if (typeof value === 'number' && value >= 0) {
-			this.setText(this._index, value.toString());
-		}
 	}
 }

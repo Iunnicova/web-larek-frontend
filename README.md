@@ -7,10 +7,9 @@
 Демо проекта
 https://github.com/Iunnicova/web-larek-frontend.git
 
-
 ##### Ссылка на сайт
-https://github.com/Iunnicova/web-larek-frontend
 
+https://github.com/Iunnicova/web-larek-frontend
 
 Важные файлы:
 
@@ -56,7 +55,7 @@ yarn build
 ### Карточка товара
 
 ```
- interface IProductCard {
+interface IProductCard {
 	id: string;
 	description: string;
 	image: string;
@@ -66,32 +65,27 @@ yarn build
 }
 ```
 
-### Pасширяет интерфейс IProductCard
+### Описание заказа
 
 ```
  interface ICardData extends IProductCard {
 	buttonLabel: boolean;
-	<!-- index?: number; -->
+	index: number;
 }
 ```
 
-### Описание заказ
+### Структура заказа
 
 ```
  interface IOrder {
-	<!-- id?: string; -->
 	payment: string;
-	<!-- title?: string; -->
 	email: string;
 	phone: string;
 	address: string;
-	total: number;
-	<!-- price?: number; -->
-	items: string[];
 }
 ```
 
-### Есть товар в корзине или нет
+### статус товара в корзине
 
 ```
  interface ICommodityItem extends IProductCard {
@@ -110,31 +104,32 @@ yarn build
 }
 ```
 
-### Корзина
+### Представление корзины
 
 ```
- interface IBasketView {
+interface IBasketView {
 	selected: string[];
 	items: HTMLElement[];
 	total: number;
 }
 ```
 
-### Будет вызвано при клике
+### Действие при клике
 
 ```
- interface IAction {
-	onClick?: () => void;
+interface IAction {
+	onClick: () => void;
 }
 ```
 
-### Данныe приложения для хранения
+### Данныe приложения
 
 ```
  interface IAppData {
 	products: ICommodityItem[];
 	basket: ICommodityItem[];
 	order: IOrder;
+	payment: IPaymentModel;
 }
 ```
 
@@ -146,10 +141,18 @@ type ErrorForm = Partial<Record<keyof IOrder, string>>;
 
 ```
 
+### хранит информацию о выбранном способе оплаты
+
+```
+interface IPaymentModel {
+	payment: string;
+}
+```
+
 ### Cостояние формы
 
 ```
- interface IFormState {
+interface IFormState {
 	valid: boolean;
 	errors: string[];
 }
@@ -158,7 +161,7 @@ type ErrorForm = Partial<Record<keyof IOrder, string>>;
 ### Данные для модального окна
 
 ```
- interface IModalData {
+interface IModalData {
 	content: HTMLElement;
 }
 ```
@@ -173,7 +176,7 @@ interface IPageData {
 }
 ```
 
-### Интерфейс API магазина
+### API интерфейс магазина
 
 ```
 interface IApiShop {
@@ -183,7 +186,7 @@ interface IApiShop {
 }
 ```
 
-### Интерфейс для API заказа
+### Модель заказа в магазине
 
 ```
 interface IOrderShop {
@@ -263,30 +266,22 @@ export interface ISuccess {
  `Object.` Копируем свойства из `data` в экземпляр класса\
  `emitChanges` Метод предназначен для уведомления об изменениях в модели
 
-	//*уведомляет презентер о том, что данные изменены
-	//обновляет свойство модели и выдает событие с новым платежом
-	changePayment(value: unknown) {
-		if (typeof value === 'string') {
-			this.payment = value;
-			this.events.emit('errorForm:change', { payment: value });
-		} else {
-			console.warn(value);
-		}
-	}
-
-
+    //*уведомляет презентер о том, что данные изменены
+    //обновляет свойство модели и выдает событие с новым платежом
+    changePayment(value: unknown) {
+    	if (typeof value === 'string') {
+    		this.payment = value;
+    		this.events.emit('errorForm:change', { payment: value });
+    	} else {
+    		console.warn(value);
+    	}
+    }
 
 ## Слой данных
 
-### Классы представления
-
-Все классы представления отвечают за отображение внутри контейнера (DOM-элемент) передаваемых в них данных
-
----
-
 #### Класс AppData
 
-Класс AppState содержит несколько методов, связанных с управлением заказами и каталогом продуктов. Ниже приведено краткое изложение методов
+Класс наследуется от базового класса Model, предоставляет методы реализующие взаимодействие с бэкендом сервиса.
 
 `setViewing` Устанавливаем идентификатор товара, который сейчас просматривается\
 `setCatalog` Устанавливаем массив товаров\
@@ -301,9 +296,10 @@ export interface ISuccess {
 `setOrderField` Устанавливаем поле заказа\
 `validateOrder` Проверяем форму заказа на ошибки
 
-#### Класс Baske
+#### Класс Basket
 
-Класс отвечает за отправление товара в корзину
+Класс наследуется от базового класса Components, отображает корзину и товар который в ней находится.
+
 Конструктор принимает родительский элемент в качестве
 аргумента объект `EventEmitter`
 
@@ -317,15 +313,17 @@ export interface ISuccess {
 
 #### Класс CardBasket
 
+Расширяет класс Card, предназначен для представления элемента карточки товара в корзине покупок
+
 Поля класса:
-`_index` Защищенное поле, представляющее элемент для отображения индекса товара в корзине
+`_index` Защищенное поле, предназначен для отображения индекса и стоимости в карточке
 
 Сеттеры:
-`index` Форматирует и устанавливает текст общей стоимости
+`index` Сеттер предназначен для установки значения индекса. Если значение отрицательное число, сеттер ничего не делает и не изменяет отображение.
 
-#### Класс Cards
+#### Класс Card
 
-Отвечает за отображение rкарточки, задавая в карточке товара данные названия, изображения, стоимость. Класс используется для отображения карточек товара на странице сайта. В конструктор класса передается DOM элемент темплейта. В классе устанавливаются слушатели на все интерактивные элементы, в результате взаимодействия с которыми пользователя генерируются соответствующие события
+Класс наследуется от базового класса Components.Представляет собой компонент карточки товара. Он отвечает за отображение данных о товаре, таких как название, описание, категория, изображение и цена.
 
 Поля класса:
 
@@ -382,13 +380,12 @@ export interface ISuccess {
 
 #### Класс Order
 
-Представляет собой форму для оформления заказа с поддержкой выбора метода оплаты и ввода адреса
+Класс Order наследуется от класса Form. Отвечает за взаимодействие с элементами формы, которые относятся к заказу, включая кнопки для выбора способа оплаты и поле для ввода адреса доставки.
 Сеттер:
 
 `address` Устанавливает адрес в поле ввода адреса
-Метод:
 
-`selected`Выбирает кнопку платежа по имени и добавляет или удаляет класс на кнопке
+`selected`Выбирает кнопку платежа по имени и добавляет или удаляет класс на кнопке.
 
 ### Класс Page
 
@@ -436,14 +433,16 @@ ApiShop расширяет базовый класс Api и предоставл
 
 ### События изменения данных
 
+`payment:changed` изменение способа оплаты
 `catalog:changed` изменение состояние каталога товаров  
 `card:select` выбор карточки товар  
-`contacts:submit` отправка контактной информации  
+`contacts:submit` отправка данных готового заказа на сервер  
 `basket:changed` в корзине происходит изменение\
-`errorForm:change` изменениями в форме заказа, ошибки  
-`order:open` открытие модального окна  
+`errorForm:change` обновление состояния валидности и сообщения об ошибках  
+`order:open` открытие формы заказа  
 `viewing:changed` изменение состояния просмотра  
 `basket:open` открытия корзины  
 `modal:open` открывает модальное окно  
 `modal:close` закрытия модального окна
-`modal_active`
+`^(order|contacts)\..*:change` изменение полей в формах заказа и контактов
+`order:submit` отображение формы контактов

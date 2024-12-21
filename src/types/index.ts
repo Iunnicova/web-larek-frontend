@@ -8,12 +8,13 @@ export interface IProductCard {
 	price: number | null;
 }
 
+// //*+ описание заказа
 export interface ICardData extends IProductCard {
 	buttonLabel: boolean;
-	index?: number;
+	index: number;
 }
 
-//*+ описание заказ
+//*+ структура заказа
 export interface IOrder {
 	payment: string;
 	email: string;
@@ -21,7 +22,7 @@ export interface IOrder {
 	address: string;
 }
 
-//*+ есть товар в корзине или нет
+//*+ статус товара в корзине
 export interface ICommodityItem extends IProductCard {
 	statusBasket: boolean;
 }
@@ -34,19 +35,19 @@ export interface IFormOrder {
 	phone: string;
 }
 
-//*+ кoрзина
+//*+ представление корзины
 export interface IBasketView {
 	selected: string[];
 	items: HTMLElement[];
 	total: number;
 }
 
-//*+ будет вызвано при клике
+//*+ действие при клике
 export interface IAction {
 	onClick: () => void;
 }
 
-//*+данныe приложения для хранения
+//*+данныe приложения
 export interface IAppData {
 	products: ICommodityItem[];
 	basket: ICommodityItem[];
@@ -80,14 +81,14 @@ export interface IPageData {
 	locked: boolean;
 }
 
-//*+ интерфейс API магазина
+//*+API интерфейс магазина
 export interface IApiShop {
 	getListItem: () => Promise<IProductCard[]>;
 	getItem: (id: string) => Promise<IProductCard>;
 	orderGoods: (order: IOrder) => Promise<IOrderShop>;
 }
 
-//*+ интерфейс для API заказа
+//*+ модель заказа в магазине
 export interface IOrderShop {
 	id: string;
 	total: number;
