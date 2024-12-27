@@ -9,10 +9,17 @@ import { Page } from './components/Page';
 import { ApiShop } from './components/ApiShop';
 import { Success } from './components/Success';
 import './scss/styles.scss';
-import { ICommodityItem, IFormOrder, IProductCard } from './types';
+import {
+	ICommodityItem,
+	IFormOrder,
+	IOrder,
+	IProductCard,
+	paymentSelection,
+} from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, createElement, ensureElement } from './utils/utils';
 import { CardBasket } from './components/CardBasket';
+// import { CardBasket } from './components/CardBasket';
 
 const events = new EventEmitter();
 const api = new ApiShop(CDN_URL, API_URL);
@@ -30,7 +37,7 @@ const modalElement = ensureElement<HTMLElement>('#modal-container');
 const pageElement = ensureElement<HTMLElement>('.page');
 
 const appData = new AppData({}, events);
-
+const order = new Order(cloneTemplate(orderTemplate), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const page = new Page(pageElement, events);
 const modal = new Modal(modalElement, events);
@@ -38,17 +45,6 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), {
 	onClick: () => {
 		modal.close();
-	},
-});
-
-const paymentSelection: Record<string, string> = {
-	card: 'online',
-	cash: 'buttonUponReceipt',
-};
-
-const order = new Order(cloneTemplate(orderTemplate), events, {
-	onClick: (event: Event) => {
-		events.emit('payment:changed', event.target);
 	},
 });
 
@@ -73,7 +69,7 @@ events.on<IProductCard>('catalog:changed', () => {
 	page.gallery = card;
 });
 
-// *+отправкa данных готового заказа на сервер
+//*+отправкa данных готового заказа на сервер
 events.on('contacts:submit', () => {
 	api
 		.orderGoods(appData.getOrder())
@@ -97,17 +93,13 @@ events.on('contacts:submit', () => {
 		});
 });
 
-//*+Выбор оплаты
-events.on('payment:changed', (target: HTMLButtonElement) => {
-	if (!target.classList.contains('button_alt-active')) {
-		order.selected(target);
-		const paymentMethod = target.getAttribute('name');
-		appData.order.payment = paymentSelection[paymentMethod];
-	}
+//*+ Изменение способа оплаты
+events.on('payment:changed', (data: { target: paymentSelection }): void => {
+	appData.orderPaymentMethod(data.target);
 });
 
 //*+обновляеm состояние валидности и сообщения об ошибках
-events.on('errorForm:change', (errors: Partial<IFormOrder>) => {
+events.on('errorForm:change', (errors: Partial<IOrder>) => {
 	const { payment, address } = errors;
 	const { email, phone } = errors;
 
@@ -122,18 +114,27 @@ events.on('errorForm:change', (errors: Partial<IFormOrder>) => {
 		.join('; ');
 });
 
-//*+изменениe полей в формах заказа и контактов.
+//*+ поле в форме заказа изменяется
 events.on(
-	/^(order|contacts)\..*:change/,
+	/^order\..*:change/,
 	(data: { field: keyof IFormOrder; value: string }) => {
 		appData.setOrderField(data.field, data.value);
 	}
 );
 
-// *+Открыть форму заказа
+//*+изменениe поля в форме контактов
+events.on(
+	/^contacts\..*:change/,
+	(data: { field: keyof IFormOrder; value: string }) => {
+		appData.choosePaymentMethod(data.field, data.value);
+	}
+);
+
+//*+Открыть форму заказа
 events.on('order:open', () => {
 	modal.render({
 		content: order.render({
+			payment: null,
 			address: '',
 			valid: false,
 			errors: [],

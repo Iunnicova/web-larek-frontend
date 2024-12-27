@@ -15,11 +15,8 @@ export interface ICardData extends IProductCard {
 }
 
 //*+ структура заказа
-export interface IOrder {
-	payment: string;
-	email: string;
-	phone: string;
-	address: string;
+export interface IOrder extends IFormOrder {
+	payment: paymentSelection;
 }
 
 //*+ статус товара в корзине
@@ -29,7 +26,6 @@ export interface ICommodityItem extends IProductCard {
 
 //*+формы заказа
 export interface IFormOrder {
-	payment: string;
 	address: string;
 	email: string;
 	phone: string;
@@ -42,7 +38,7 @@ export interface IBasketView {
 	total: number;
 }
 
-//*+ действие при клике
+// //*+ действие при клике
 export interface IAction {
 	onClick: () => void;
 }
@@ -55,13 +51,13 @@ export interface IAppData {
 	payment: IPaymentModel;
 }
 
+//*+ ошибки валидации форм
+export type ErrorForm = Partial<Record<keyof IOrder, string>>;
+
 //*+хранит информацию о выбранном способе оплаты
 export interface IPaymentModel {
 	payment: string;
 }
-
-//*+ ошибки валидации форм
-export type ErrorForm = Partial<Record<keyof IOrder, string>>;
 
 //*+ состояние формы
 export interface IFormState {
@@ -98,3 +94,6 @@ export interface IOrderShop {
 export interface ISuccess {
 	description: number;
 }
+
+//*+ представление корзины
+export type paymentSelection = 'card' | 'cash';

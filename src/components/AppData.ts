@@ -4,15 +4,14 @@ import {
 	IOrder,
 	IFormOrder,
 	ErrorForm,
-	IPaymentModel,
+	paymentSelection,
 } from '../types';
 import { Model } from './base/Model';
 
-export class AppData extends Model<IPaymentModel> {
+export class AppData extends Model<IFormOrder> {
 	protected goods: ICommodityItem[];
-	protected basket: ICommodityItem[];
 	order: IOrder = {
-		payment: '',
+		payment: null,
 		address: '',
 		email: '',
 		phone: '',
@@ -35,8 +34,8 @@ export class AppData extends Model<IPaymentModel> {
 
 	//*+обновляем корзину товаров
 	updateBasket() {
-		this.basket = this.goods.filter((item) => item.statusBasket);
-		this.events.emit('basket:changed', this.basket);
+		const basketItems = this.goods.filter((item) => item.statusBasket);
+		this.events.emit('basket:changed', basketItems);
 	}
 
 	//*+возвращаем массив товаров.
@@ -45,22 +44,12 @@ export class AppData extends Model<IPaymentModel> {
 	}
 
 	//*+возвращаем объект заказа
-	getOrder(): IOrder {
-		const total = this.getTotal();
-		const goodsBasket = this.getGoodsBasket();
-
-		let items: string[] = [];
-		if (Array.isArray(goodsBasket)) {
-			items = goodsBasket.map((item) => item.id);
-		}
-
-		const order = {
+	getOrder() {
+		return {
 			...this.order,
-			total,
-			items,
+			total: this.getTotal(),
+			items: this.getGoodsBasket().map((item) => item.id),
 		};
-
-		return order;
 	}
 
 	//*+добавляем товар в корзину
@@ -82,7 +71,7 @@ export class AppData extends Model<IPaymentModel> {
 
 	//*+ возвращаем общую стоимость товаров в корзине
 	getTotal() {
-		return this.basket.reduce((a, c) => {
+		return this.goods.reduce((a, c) => {
 			if (c.statusBasket) {
 				return a + c.price;
 			}
@@ -90,19 +79,41 @@ export class AppData extends Model<IPaymentModel> {
 		}, 0);
 	}
 
+	//*+ устанавливает выбранный способ оплаты заказа и валидирует
+	orderPaymentMethod(value: paymentSelection) {
+		this.order.payment = value;
+
+		if (this.validateOrder()) {
+			this.events.emit('order:ready', this.order);
+		}
+	}
+
 	//*+ возвращаем массив товаров в корзине
 	getGoodsBasket(): ICommodityItem[] {
 		if (!Array.isArray(this.goods)) {
 			return [];
 		}
-		this.basket = this.goods.filter((item) => item.statusBasket);
-
-		return this.basket;
+		return this.goods.filter((item) => item.statusBasket);
 	}
 
 	// *+ очищаем корзину
 	clearBasket() {
-		this.basket.forEach((item) => (item.statusBasket = false));
+		this.goods.forEach((item) => (item.statusBasket = false));
+		this.order = {
+			address: '',
+			email: '',
+			phone: '',
+			payment: null,
+		};
+	}
+
+	//*+ устанавливает значение указанного поля контактной информации заказа и валидирует заказ после этого.
+	choosePaymentMethod(field: keyof IFormOrder, value: string) {
+		this.order[field] = value;
+
+		if (this.validateOrder()) {
+			this.events.emit('order:ready', this.order);
+		}
 	}
 
 	//*+устанавливаем поле заказа

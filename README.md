@@ -77,11 +77,8 @@ interface IProductCard {
 ### Структура заказа
 
 ```
- interface IOrder {
-	payment: string;
-	email: string;
-	phone: string;
-	address: string;
+ interface IOrder extends IFormOrder {
+	payment: paymentSelection;
 }
 ```
 
@@ -96,8 +93,7 @@ interface IProductCard {
 ### Формы заказа
 
 ```
- interface IFormOrder {
-	payment: string;
+interface IFormOrder {
 	address: string;
 	email: string;
 	phone: string;
@@ -125,7 +121,7 @@ interface IAction {
 ### Данныe приложения
 
 ```
- interface IAppData {
+interface IAppData {
 	products: ICommodityItem[];
 	basket: ICommodityItem[];
 	order: IOrder;
@@ -201,6 +197,12 @@ interface IOrderShop {
 export interface ISuccess {
 	description: number;
 }
+```
+
+### Представление корзины
+
+```
+export type paymentSelection = 'card' | 'cash';
 ```
 
 ## Архитектура приложения
@@ -294,6 +296,8 @@ export interface ISuccess {
 `getGoodsBasket` Возвращаем массив товаров в корзине\
 `clearBasket` Очищаем корзину\
 `setOrderField` Устанавливаем поле заказа\
+`orderPaymentMethod` Устанавливает выбранный способ оплаты заказа и валидирует\
+`choosePaymentMethod` Устанавливает значение указанного поля контактной информации заказа\
 `validateOrder` Проверяем форму заказа на ошибки
 
 #### Класс Basket
@@ -308,7 +312,7 @@ export interface ISuccess {
 
 Сеттеры :\
 `items` Устанавливает список товаров в корзине\
-`selected` Управляет доступностью кнопки оформления заказа в зависимости от наличия выбранных товаров\
+`setButtonClass` Управляет доступностью кнопки оформления заказа в зависимости от наличия выбранных товаров\
  `total` Форматирует и устанавливает текст общей стоимости
 
 #### Класс CardBasket
@@ -385,7 +389,7 @@ export interface ISuccess {
 
 `address` Устанавливает адрес в поле ввода адреса
 
-`selected`Выбирает кнопку платежа по имени и добавляет или удаляет класс на кнопке.
+`setButtonClass`Выбирает кнопку платежа по имени и добавляет или удаляет класс на кнопке.
 
 ### Класс Page
 
