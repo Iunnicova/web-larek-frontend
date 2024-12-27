@@ -130,28 +130,30 @@ events.on(
 	}
 );
 
-//*+Открыть форму заказа
+// //*+Открыть форму заказа
 events.on('order:open', () => {
 	modal.render({
 		content: order.render({
 			payment: null,
-			address: '',
-			valid: false,
+			address: appData.order.address,
+			valid: appData.validateOrder(),
 			errors: [],
 		}),
 	});
+	appData.validateOrder();
 });
 
-//*+отображение формы контактов
+// //*+отображение формы контактов
 events.on('order:submit', () => {
 	modal.render({
 		content: contacts.render({
-			email: '',
-			phone: '',
+			email: appData.order.email,
+			phone: appData.order.phone,
 			errors: [],
-			valid: false,
+			valid: appData.validateOrder(),
 		}),
 	});
+	appData.validateOrder();
 });
 
 //*+обратывает событие добавления товара в корзину и рендерит карточки товаров в корзине

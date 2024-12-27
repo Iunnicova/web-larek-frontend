@@ -14,6 +14,7 @@ export class CardBasket extends Component<IBasketCard> {
 	protected _index: HTMLElement;
 	protected _price: HTMLElement;
 	protected _button: HTMLButtonElement;
+	protected _title: HTMLElement;
 
 	constructor(container: HTMLElement, actions?: IBasketActions) {
 		super(container);
@@ -33,17 +34,19 @@ export class CardBasket extends Component<IBasketCard> {
 				actions?.onClick(evt);
 			});
 		}
+
+		this._title = ensureElement<HTMLSpanElement>(`.card__title`, container);
 	}
 
 	set index(value: number) {
-		if (typeof value === 'number' && value >= 0) {
-			this.setText(this._index, value.toString());
-		}
+		this.setText(this._index, value);
 	}
 
 	set price(value: number) {
-		if (typeof value === 'number' && value >= 0) {
-			this.setText(this._price, value + ' синапсов');
-		}
+		this.setText(this._price, value + ' синапсов');
+	}
+
+	set title(value: string) {
+		this.setText(this._title, value);
 	}
 }

@@ -110,19 +110,13 @@ export class AppData extends Model<IFormOrder> {
 	//*+ устанавливает значение указанного поля контактной информации заказа и валидирует заказ после этого.
 	choosePaymentMethod(field: keyof IFormOrder, value: string) {
 		this.order[field] = value;
-
-		if (this.validateOrder()) {
-			this.events.emit('order:ready', this.order);
-		}
+		this.validateOrder();
 	}
 
 	//*+устанавливаем поле заказа
 	setOrderField(field: keyof IFormOrder, value: string) {
 		this.order[field] = value;
-
-		if (this.validateOrder()) {
-			this.events.emit('order:ready', this.order);
-		}
+		this.validateOrder();
 	}
 
 	//*+ проверяем форму заказа на ошибки
