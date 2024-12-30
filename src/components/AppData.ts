@@ -4,7 +4,7 @@ import {
 	IOrder,
 	IFormOrder,
 	ErrorForm,
-	paymentSelection,
+	PaymentSelection,
 } from '../types';
 import { Model } from './base/Model';
 
@@ -80,7 +80,7 @@ export class AppData extends Model<IFormOrder> {
 	}
 
 	//*+ устанавливает выбранный способ оплаты заказа и валидирует
-	orderPaymentMethod(value: paymentSelection) {
+	orderPaymentMethod(value: PaymentSelection) {
 		this.order.payment = value;
 
 		if (this.validateOrder()) {

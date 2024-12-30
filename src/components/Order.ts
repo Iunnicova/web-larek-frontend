@@ -12,7 +12,6 @@ export class Order extends Form<IOrder> {
 
 		this._buttons.forEach((button) => {
 			button.addEventListener('click', () => {
-				this.setButtonClass(button.name);
 				events.emit('payment:changed', { target: button.name });
 			});
 		});

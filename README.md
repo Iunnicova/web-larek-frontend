@@ -78,7 +78,7 @@ interface IProductCard {
 
 ```
  interface IOrder extends IFormOrder {
-	payment: paymentSelection;
+	payment: PaymentSelection;
 }
 ```
 
@@ -202,7 +202,14 @@ export interface ISuccess {
 ### Представление корзины
 
 ```
-export type paymentSelection = 'card' | 'cash';
+export type PaymentSelection = 'card' | 'cash';
+```
+
+### Описание события
+
+```
+export interface IPaymentChangedEvent {
+  target: string;}
 ```
 
 ## Архитектура приложения

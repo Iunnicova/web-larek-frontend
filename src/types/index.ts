@@ -16,7 +16,7 @@ export interface ICardData extends IProductCard {
 
 //*+ структура заказа
 export interface IOrder extends IFormOrder {
-	payment: paymentSelection;
+	payment: PaymentSelection;
 }
 
 //*+ статус товара в корзине
@@ -96,4 +96,9 @@ export interface ISuccess {
 }
 
 //*+ представление корзины
-export type paymentSelection = 'card' | 'cash';
+export type PaymentSelection = 'card' | 'cash';
+
+//*+описание события
+export interface IPaymentChangedEvent {
+	target: string;
+}

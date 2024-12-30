@@ -13,13 +13,13 @@ import {
 	ICommodityItem,
 	IFormOrder,
 	IOrder,
+	IPaymentChangedEvent,
 	IProductCard,
-	paymentSelection,
+	PaymentSelection,
 } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, createElement, ensureElement } from './utils/utils';
 import { CardBasket } from './components/CardBasket';
-// import { CardBasket } from './components/CardBasket';
 
 const events = new EventEmitter();
 const api = new ApiShop(CDN_URL, API_URL);
@@ -94,7 +94,7 @@ events.on('contacts:submit', () => {
 });
 
 //*+ Изменение способа оплаты
-events.on('payment:changed', (data: { target: paymentSelection }): void => {
+events.on('payment:changed', (data: { target: PaymentSelection }): void => {
 	appData.orderPaymentMethod(data.target);
 });
 
@@ -132,6 +132,8 @@ events.on(
 
 // //*+Открыть форму заказа
 events.on('order:open', () => {
+	appData.validateOrder();
+	appData.orderPaymentMethod('card');
 	modal.render({
 		content: order.render({
 			payment: null,
@@ -140,7 +142,13 @@ events.on('order:open', () => {
 			errors: [],
 		}),
 	});
-	appData.validateOrder();
+
+	order.setButtonClass('card');
+});
+
+events.on('payment:changed', (event: IPaymentChangedEvent) => {
+	const { target } = event;
+	order.setButtonClass(target);
 });
 
 // //*+отображение формы контактов
